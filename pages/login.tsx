@@ -7,7 +7,7 @@ export default function Login() {
   const router = useRouter();
 
   return (
-    <AppContainer title="Login">
+    <AppContainer title="Login" without={["navbar"]}>
       <div className="flex h-screen">
         <div className="m-auto">
           <div className="flex flex-col overflow-hidden bg-white rounded-md shadow-lg max md:flex-row md:flex-1 lg:max-w-screen-md">
