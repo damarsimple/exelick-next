@@ -2,6 +2,7 @@ import React from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { MdSearch, MdShoppingCart } from "react-icons/md";
+import { AiOutlineUser } from "react-icons/ai";
 
 type Except = "navbar";
 
@@ -52,6 +53,13 @@ export default function AppContainer({
               </button>
             </div>
             <div className="flex gap-2">
+              <Link href="/dashboard">
+                <a>
+                  <button className="p-2 bg-gray-50 hover:bg-gray-200 text-sm text-gray-900 font-semibold rounded">
+                    <AiOutlineUser size="1.5em" />
+                  </button>
+                </a>
+              </Link>
               <Link href="/checkout">
                 <a>
                   <button className="p-2 bg-gray-50 hover:bg-gray-200 text-sm text-gray-900 font-semibold rounded">
