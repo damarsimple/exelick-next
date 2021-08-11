@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { MdPlusOne, MdShoppingCart } from "react-icons/md";
 import { AiFillMinusCircle, AiFillPlusCircle } from "react-icons/ai";
 
 export default function ProductCard() {
+  const [count, setCount] = useState(1);
   return (
     <div className="mx-auto max-w-xs bg-white shadow-lg rounded-lg overflow-hidden">
       <div className="px-4 py-2">
@@ -20,17 +21,30 @@ export default function ProductCard() {
         height={500}
         src="https://trakteer.id/storage/images/avatar/ava-kqwK2sVxMEXfACgq0luplMIrcWAm9eGA1617518306.jpg"
       />
-      <div className="flex items-center justify-between px-4 py-2 bg-gray-900 gap-2">
-        <h1 className="text-gray-200 font-bold text-sm md:text-xl">
+      <div className="grid grid-cols-5 items-center justify-between px-4 py-2 bg-gray-900 gap-2">
+        <h1 className="text-gray-200 font-bold text-sm md:text-md">
           Rp 10.000
         </h1>
-        <button className="px-3 py-1 bg-gray-200 text-sm text-gray-900 font-semibold rounded">
-          <AiFillPlusCircle size="1.5em" />
-        </button>
-        <button className="px-3 py-1 bg-gray-200 text-sm text-gray-900 font-semibold rounded">
+        <input
+          value={count}
+          onChange={(e) => setCount(parseInt(e.target.value))}
+          type="number"
+          className="px-3 py-1 bg-gray-50 hover:bg-gray-100 text-sm text-gray-900 font-semibold rounded"
+        />
+
+        <button
+          onClick={() => setCount(count == 1 ? 1 : count - 1)}
+          className="flex justify-center px-3 py-1 bg-gray-50 hover:bg-gray-100 text-sm text-gray-900 font-semibold rounded"
+        >
           <AiFillMinusCircle size="1.5em" />
         </button>
-        <button className="px-3 py-1 bg-gray-200 text-sm text-gray-900 font-semibold rounded">
+        <button
+          onClick={() => setCount(count + 1)}
+          className="flex justify-center px-3 py-1 bg-gray-50 hover:bg-gray-100 text-sm text-gray-900 font-semibold rounded"
+        >
+          <AiFillPlusCircle size="1.5em" />
+        </button>
+        <button className="flex justify-center px-3 py-1 bg-gray-50 hover:bg-gray-100 text-sm text-gray-900 font-semibold rounded">
           <MdShoppingCart size="1.5em" />
         </button>
       </div>
