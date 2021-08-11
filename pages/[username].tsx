@@ -1,10 +1,10 @@
-/* eslint-disable @next/next/no-img-element */
 import withRouter from "next/dist/client/with-router";
 import Image from "next/image";
 
 import React from "react";
+import ProductCard from "../components/ProductCard";
 
-function index() {
+function Username() {
   return (
     <div className="grid grid-cols-12 h-screen lg:container lg:mx-auto gap-3">
       <div className="col-span-12 md:col-span-12 lg:col-span-2 bg-gray-100 flex flex-col p-10  gap-6">
@@ -36,31 +36,7 @@ function index() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2 p-4">
           {[...Array(10)].map((e, i) => (
-            <div
-              key={i}
-              className="mx-auto max-w-xs bg-white shadow-lg rounded-lg overflow-hidden"
-            >
-              <div className="px-4 py-2">
-                <h1 className="text-gray-900 font-bold text-3xl uppercase">
-                  DROP ITEM
-                </h1>
-                <p className="text-gray-600 text-sm mt-1">
-                  Buang item yang ada di tangan saat ini
-                </p>
-              </div>
-              <Image
-                alt="Picture of the author"
-                width={500}
-                height={500}
-                src="https://trakteer.id/storage/images/avatar/ava-kqwK2sVxMEXfACgq0luplMIrcWAm9eGA1617518306.jpg"
-              />
-              <div className="flex items-center justify-between px-4 py-2 bg-gray-900">
-                <h1 className="text-gray-200 font-bold text-xl">Rp 10.000</h1>
-                <button className="px-3 py-1 bg-gray-200 text-sm text-gray-900 font-semibold rounded">
-                  Add to card
-                </button>
-              </div>
-            </div>
+            <ProductCard key={i} />
           ))}
         </div>
       </div>
@@ -121,4 +97,4 @@ function index() {
   );
 }
 
-export default withRouter(index);
+export default withRouter(Username);
