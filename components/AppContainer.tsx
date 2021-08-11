@@ -1,7 +1,7 @@
 import React from "react";
 import Head from "next/head";
 import Link from "next/link";
-import { MdSearch } from "react-icons/md";
+import { MdSearch, MdShoppingCart } from "react-icons/md";
 
 type Except = "navbar";
 
@@ -51,13 +51,22 @@ export default function AppContainer({
                 <MdSearch size="1.5em" />
               </button>
             </div>
-            <Link href="/login">
-              <a>
-                <button className="p-2 bg-gray-50 hover:bg-gray-200 text-sm text-gray-900 font-semibold rounded">
-                  Login
-                </button>
-              </a>
-            </Link>
+            <div className="flex gap-2">
+              <Link href="/checkout">
+                <a>
+                  <button className="p-2 bg-gray-50 hover:bg-gray-200 text-sm text-gray-900 font-semibold rounded">
+                    <MdShoppingCart size="1.5em" />
+                  </button>
+                </a>
+              </Link>
+              <Link href="/login">
+                <a>
+                  <button className="p-2 bg-gray-50 hover:bg-gray-200 text-sm text-gray-900 font-semibold rounded">
+                    Login
+                  </button>
+                </a>
+              </Link>
+            </div>
           </nav>
         )}
         <div className="h-full box-border pt-16">{children}</div>
