@@ -1,5 +1,7 @@
 import React from "react";
 import Image from "next/image";
+import { MdPlusOne, MdShoppingCart } from "react-icons/md";
+import { AiFillMinusCircle, AiFillPlusCircle } from "react-icons/ai";
 
 export default function ProductCard() {
   return (
@@ -18,16 +20,18 @@ export default function ProductCard() {
         height={500}
         src="https://trakteer.id/storage/images/avatar/ava-kqwK2sVxMEXfACgq0luplMIrcWAm9eGA1617518306.jpg"
       />
-      <div className="flex items-center justify-between px-4 py-2 bg-gray-900">
-        <h1 className="text-gray-200 font-bold text-xl">Rp 10.000</h1>
-        <button className="px-3 py-1 bg-gray-200 text-md text-gray-900 font-semibold rounded">
-          +
-        </button>
-        <button className="px-3 py-1 bg-gray-200 text-md text-gray-900 font-semibold rounded">
-          -
+      <div className="flex items-center justify-between px-4 py-2 bg-gray-900 gap-2">
+        <h1 className="text-gray-200 font-bold text-sm md:text-xl">
+          Rp 10.000
+        </h1>
+        <button className="px-3 py-1 bg-gray-200 text-sm text-gray-900 font-semibold rounded">
+          <AiFillPlusCircle size="1.5em" />
         </button>
         <button className="px-3 py-1 bg-gray-200 text-sm text-gray-900 font-semibold rounded">
-          Add to card
+          <AiFillMinusCircle size="1.5em" />
+        </button>
+        <button className="px-3 py-1 bg-gray-200 text-sm text-gray-900 font-semibold rounded">
+          <MdShoppingCart size="1.5em" />
         </button>
       </div>
     </div>

@@ -14,8 +14,8 @@ export default function Index() {
           </TabList>
 
           <TabPanel>
-            <div className="grid grid-cols-12 gap-2">
-              <div className="col-span-8">
+            <div className="grid  grid-cols-1 md:grid-cols-12 gap-2">
+              <div className="col-span-1 md:col-span-8 order-last">
                 <Paper name="Config">
                   <div className="flex flex-col gap-4">
                     {[
@@ -44,7 +44,7 @@ export default function Index() {
                   </div>
                 </Paper>
               </div>
-              <div className="col-span-4">
+              <div className="col-span-1 md:col-span-4">
                 <Paper name="Preview">
                   <div>To Be Created</div>
                 </Paper>
