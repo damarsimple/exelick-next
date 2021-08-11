@@ -18,8 +18,8 @@ export default function DashboardContainer({ children }: DCContainer) {
   const { pathname } = useRouter();
 
   return (
-    <div className="grid grid-cols-12">
-      <div className="col-span-3 flex flex-col gap-1 bg-gradient-to-b from-blue-400 to-green-500 p-2 h-screen">
+    <div className="min-h-full grid grid-cols-12">
+      <div className="col-span-3 flex flex-col gap-1 bg-gradient-to-b from-blue-400 to-green-500 p-2 max-h-full">
         {[
           {
             name: "Dashboard",
@@ -71,9 +71,7 @@ export default function DashboardContainer({ children }: DCContainer) {
           </Link>
         ))}
       </div>
-      <div className="col-span-9 p-2 md:p-10 h-screen overflow-y-auto">
-        {children}
-      </div>
+      <div className="col-span-9 p-2 md:p-10 ">{children}</div>
     </div>
   );
 }
