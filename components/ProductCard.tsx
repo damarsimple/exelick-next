@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Image from "next/image";
-import { MdPlusOne, MdShoppingCart } from "react-icons/md";
+import { MdShoppingCart } from "react-icons/md";
 import { AiFillMinusCircle, AiFillPlusCircle } from "react-icons/ai";
 
 export default function ProductCard() {
@@ -25,12 +25,6 @@ export default function ProductCard() {
         <h1 className="text-gray-200 font-bold text-sm md:text-md">
           Rp 10.000
         </h1>
-        <input
-          value={count}
-          onChange={(e) => setCount(parseInt(e.target.value))}
-          type="number"
-          className="px-3 py-1 bg-gray-50 hover:bg-gray-100 text-sm text-gray-900 font-semibold rounded"
-        />
 
         <button
           onClick={() => setCount(count == 1 ? 1 : count - 1)}

@@ -29,12 +29,14 @@ function Username() {
           </div>
         </div>
         <div className="col-span-12 md:col-span-6 lg:col-span-8 lg:max-h-full lg:overflow-x-auto">
-          <div className="hidden lg:block w-full h-56 bg-gray-200">
-            {/* <Image
-            alt="Picture of the author"
-            layout="fill"
-            src="https://trakteer.id/storage/images/cover/cvr-f8YwxU44hfHrd87I8EnatufH6ftKBy5q1617521632.jpg"
-          /> */}
+          <div className="hidden lg:block w-full h-56 bg-gray-200 mb-10 ">
+            <Image
+              alt="Picture of the author"
+              width={1200}
+              height={300}
+              objectFit="cover"
+              src="https://trakteer.id/storage/images/cover/cvr-f8YwxU44hfHrd87I8EnatufH6ftKBy5q1617521632.jpg"
+            />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-1 xl:grid-cols-3 gap-2 p-4">
             {[...Array(10)].map((e, i) => (

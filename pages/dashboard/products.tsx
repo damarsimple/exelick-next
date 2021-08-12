@@ -31,7 +31,6 @@ export default function Index() {
                       <thead>
                         <tr className="text-md font-semibold tracking-wide text-left text-gray-900 bg-gray-100 uppercase border-b border-gray-600">
                           <th className="px-4 py-3">Name</th>
-                          <th className="px-4 py-3">Purchased Count</th>
                           <th className="px-4 py-3">Price</th>
                           <th className="px-4 py-3">Date</th>
                         </tr>
@@ -62,9 +61,6 @@ export default function Index() {
                                   </p>
                                 </div>
                               </div>
-                            </td>
-                            <td className="px-4 py-3 text-ms font-semibold border">
-                              30
                             </td>
                             <td className="px-4 py-3 text-xs border">
                               Rp 10.000
