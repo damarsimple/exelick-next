@@ -7,7 +7,7 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import { relayStylePagination } from "@apollo/client/utilities";
 
 export const client = new ApolloClient({
-  uri: process.env.GRAPHQL_URL,
+  uri: process.env.NEXT_PUBLIC_GRAPHQL_URL,
   cache: new InMemoryCache({
     typePolicies: {
       Query: {
