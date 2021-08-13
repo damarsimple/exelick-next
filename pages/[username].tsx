@@ -1,32 +1,34 @@
+import { gql } from "@apollo/client";
+import { NextPageContext } from "next";
 import withRouter from "next/dist/client/with-router";
 import Image from "next/image";
 
 import React from "react";
 import AppContainer from "../components/AppContainer";
+import Loader from "../components/BoxLoader";
 import ProductCard from "../components/ProductCard";
+import { CORE_PAGE_INFO_FIELDS } from "../fragments/fragments";
+import { User } from "../types/type";
+import { client } from "./_app";
 
-function Username() {
+function Username({ user }: { user: User }) {
   return (
-    <AppContainer title="Exelick 💦💦" fullScreen>
+    <AppContainer title={user.username} fullScreen>
       <div className="grid grid-cols-12 h-full lg:container lg:mx-auto gap-3">
         <div className="col-span-12 md:col-span-6 lg:col-span-2 bg-gray-100 flex flex-col p-10  gap-6">
           <div className="flex flex-col text-center">
             <Image
               className="rounded-full h-24 w-24 "
-              src="https://trakteer.id/storage/images/avatar/ava-kqwK2sVxMEXfACgq0luplMIrcWAm9eGA1617518306.jpg"
+              src={`https://picsum.photos/seed/${user.id}/300/300`}
               alt="Picture of the author"
               width={500}
               height={500}
             />
-            <h1 className="text-lg font-semibold">Exelick UwU</h1>
-            <p className="text-md">@TadaAce</p>
-            <p className="text-md">Virtual Youtuber</p>
+            <h1 className="text-lg font-semibold">{user.name}</h1>
+            <p className="text-md">@{user.name}</p>
+            <p className="text-md">{user.tag}</p>
           </div>
-          <div className="text-sm p-2 bg-white rounded">
-            Hai! kenalin nih, namaku Tada Ace. Panggil aja Tada. Saya seorang
-            content creator yang baru bergabung di Trakteer.id. Mohon
-            dukungannya ya!
-          </div>
+          <div className="text-sm p-2 bg-white rounded">{user.description}</div>
         </div>
         <div className="col-span-12 md:col-span-6 lg:col-span-8 lg:max-h-full lg:overflow-x-auto">
           <div className="hidden lg:block w-full h-56 bg-gray-200 mb-10 ">
@@ -35,14 +37,36 @@ function Username() {
               width={1200}
               height={300}
               objectFit="cover"
-              src="https://trakteer.id/storage/images/cover/cvr-f8YwxU44hfHrd87I8EnatufH6ftKBy5q1617521632.jpg"
+              src={`https://picsum.photos/seed/${user.id}/300/300`}
             />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-1 xl:grid-cols-3 gap-2 p-4">
-            {[...Array(10)].map((e, i) => (
-              <ProductCard key={i} />
-            ))}
-          </div>
+          <Loader
+            className="grid grid-cols-1 md:grid-cols-1 xl:grid-cols-3 gap-2 p-4"
+            query={gql`
+              ${CORE_PAGE_INFO_FIELDS}
+              query UserProductByUsername {
+                userByUsername(username: "${user.username}") {
+                  products(first: 10, after: "") {
+                    pageInfo{
+                        ...CorePageInfoField
+                    }
+                    edges {
+                      node {
+                        id
+                        name
+                        is_stackable
+                        price
+                        description
+                      }
+                    }
+                  }
+                }
+              }
+            `}
+            Component={ProductCard}
+            fields="userByUsername.products"
+            perPage={12}
+          />
         </div>
         <div className="col-span-12 md:col-span-12 lg:col-span-2 bg-gray-100 flex flex-col  lg:max-h-full lg:overflow-x-auto  order-2 lg:order-last">
           {[...Array(20)].map((e, i) => (
@@ -55,7 +79,7 @@ function Username() {
                   alt="Picture of the author"
                   width={50}
                   height={50}
-                  src="https://trakteer.id/storage/images/avatar/ava-kqwK2sVxMEXfACgq0luplMIrcWAm9eGA1617518306.jpg"
+                  src={`https://picsum.photos/seed/${user.id}/50/50`}
                 />
               </div>
               <div className="flex-auto text-sm w-32">
@@ -102,4 +126,28 @@ function Username() {
   );
 }
 
-export default withRouter(Username);
+export async function getServerSideProps(context: NextPageContext) {
+  const { username } = context.query;
+  const { data } = await client.query({
+    variables: { username },
+    query: gql`
+      query UserByUsername($username: String!) {
+        userByUsername(username: $username) {
+          id
+          name
+          username
+          tag
+          description
+        }
+      }
+    `,
+  });
+
+  return {
+    props: {
+      user: data.userByUsername,
+    },
+  };
+}
+
+export default Username;

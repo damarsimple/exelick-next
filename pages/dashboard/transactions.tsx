@@ -2,6 +2,7 @@ import React from "react";
 import DashboardContainer from "../../components/DashboardContainer";
 import Image from "next/image";
 import AppContainer from "../../components/AppContainer";
+import { formatCurrency } from "../../helpers/formatter";
 
 export default function Index() {
   return (
@@ -27,7 +28,7 @@ export default function Index() {
                           alt="Picture of the author"
                           width={50}
                           height={50}
-                          src="https://trakteer.id/storage/images/avatar/ava-kqwK2sVxMEXfACgq0luplMIrcWAm9eGA1617518306.jpg"
+                          src="https://dretail.id/asset/img/image/features/payment/qris.png"
                         />
                         <div
                           className="absolute inset-0 rounded-full shadow-inner"
@@ -38,11 +39,13 @@ export default function Index() {
                         <p className="font-semibold text-black">
                           12313123-213123-231231-121
                         </p>
-                        <p className="text-xs text-gray-600">Xendit</p>
+                        <p className="text-xs text-gray-600">Qris</p>
                       </div>
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-xs border">Rp 10.000</td>
+                  <td className="px-4 py-3 text-xs border">
+                    {formatCurrency(10000)}
+                  </td>
                   <td className="px-4 py-3 text-xs border">
                     Pembelian oleh User Anonymous
                   </td>

@@ -18,9 +18,9 @@ export default function Index() {
 
             <TabPanel>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
-                {[...Array(10)].map((e, i) => (
+                {/* {[...Array(10)].map((e, i) => (
                   <ProductCard key={i} />
-                ))}
+                ))} */}
               </div>
             </TabPanel>
             <TabPanel>
@@ -40,12 +40,12 @@ export default function Index() {
                           <tr className="text-gray-700" key={i}>
                             <td className="px-4 py-3 border">
                               <div className="flex items-center text-sm">
-                                <div className="relative w-8 h-8 mr-3 rounded-full md:block">
+                                <div className="relative w-8 h-8 mr-3 md:block">
                                   <Image
                                     alt="Picture of the author"
                                     width={50}
                                     height={50}
-                                    src="https://trakteer.id/storage/images/avatar/ava-kqwK2sVxMEXfACgq0luplMIrcWAm9eGA1617518306.jpg"
+                                    src={`https://picsum.photos/seed/${i}/50/50`}
                                   />
                                   <div
                                     className="absolute inset-0 rounded-full shadow-inner"

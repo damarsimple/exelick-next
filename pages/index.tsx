@@ -1,6 +1,30 @@
-import Link from "next/link";
+import { gql } from "@apollo/client";
 import AppContainer from "../components/AppContainer";
-import Image from "next/image";
+import Loader from "../components/BoxLoader";
+import UserCard, { UserCardSkeleton } from "../components/UserCard";
+import { CORE_PAGE_INFO_FIELDS } from "../fragments/fragments";
+import { User } from "../types/type";
+
+const USERS = gql`
+  ${CORE_PAGE_INFO_FIELDS}
+  query GetUsersQuery($first: Int!, $after: String) {
+    users(first: $first, after: $after) {
+      edges {
+        node {
+          id
+          email
+          name
+          username
+          description
+          tag
+        }
+      }
+      pageInfo {
+        ...CorePageInfoField
+      }
+    }
+  }
+`;
 
 export default function Home() {
   return (
@@ -14,32 +38,14 @@ export default function Home() {
           <h2 className="font-semibold text-xl">
             Kreator yang sudah bergabung
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 mt-4 gap-2">
-            {[...Array(20)].map((e, i) => (
-              <div
-                key={i}
-                className="flex flex-col gap-2 text-center shadow rounded p-4"
-              >
-                <Image
-                  className="rounded-full h-24 w-24 "
-                  src="https://trakteer.id/storage/images/avatar/ava-kqwK2sVxMEXfACgq0luplMIrcWAm9eGA1617518306.jpg"
-                  alt="Picture of the author"
-                  width={500}
-                  height={500}
-                />
-                <h1 className="text-lg font-semibold">Exelick UwU</h1>
-                <p className="text-md">@TadaAce</p>
-                <p className="text-md">Virtual Youtuber</p>
-                <Link href="/username">
-                  <a>
-                    <button className="bg-gray-200 hover:bg-gray-300 rounded font-bold p-2 w-full">
-                      Donasi
-                    </button>
-                  </a>
-                </Link>
-              </div>
-            ))}
-          </div>
+          <Loader
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 mt-4 gap-2 p-2"
+            query={USERS}
+            Component={UserCard}
+            SkeletonComponent={UserCardSkeleton}
+            fields="users"
+            perPage={12}
+          />
         </div>
       </div>
     </AppContainer>

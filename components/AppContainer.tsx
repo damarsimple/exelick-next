@@ -20,7 +20,7 @@ export default function AppContainer({
   return (
     <div>
       <Head>
-        <title>{title ? title + " - Exelic Gayming" : "Exelic Gayming"}</title>
+        <title>{title ? title + " - Exlunode" : "Exlunode"}</title>
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1.0"
@@ -33,7 +33,7 @@ export default function AppContainer({
             <Link href="/">
               <a>
                 <button className="p-2 bg-gray-50 hover:bg-gray-200 text-sm text-gray-900 font-semibold rounded">
-                  Exelic Gayming
+                  Exlunode
                 </button>
               </a>
             </Link>
