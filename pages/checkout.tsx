@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import { AiFillMinusCircle, AiFillPlusCircle } from "react-icons/ai";
 import { MdDelete, MdPayment } from "react-icons/md";
 import AppContainer from "../components/AppContainer";
-
+import { useCartsStore } from "../store/carts";
+import Image from "next/image";
 export default function Checkout() {
   const [count, setCount] = useState(1);
+
+  const { carts, removeCarts } = useCartsStore();
   return (
     <AppContainer title="Keranjang Belanja">
       <div className="grid grid-cols-1 md:grid-cols-3  gap-2 pt-6 container mx-auto">
@@ -18,7 +21,7 @@ export default function Checkout() {
                     <th className="text-left">Product</th>
                     <th className="lg:text-right text-left pl-5 lg:pl-0">
                       <span className="lg:hidden" title="Quantity">
-                        Qtd
+                        Qty
                       </span>
                       <span className="hidden lg:inline">Quantity</span>
                     </th>
@@ -29,23 +32,28 @@ export default function Checkout() {
                   </tr>
                 </thead>
                 <tbody>
-                  {[...Array(10)].map((e, i) => (
+                  {carts.map((e, i) => (
                     <tr key={i}>
                       <td className="hidden pb-4 md:table-cell">
-                        <a href="#">
-                          {/* <img
-                          src="https://limg.app/i/Calm-Cormorant-Catholic-Pinball-Blaster-yM4oub.jpeg"
-                          className="w-20 rounded"
-                          alt="Thumbnail"
-                        /> */}
-                        </a>
+                        <button className="w-10 h-10 rounded relative">
+                          <Image
+                            src="https://dretail.id/asset/img/image/features/payment/qris.png"
+                            alt="Thumbnail"
+                            layout="fill"
+                          />
+                        </button>
                       </td>
                       <td>
                         <div className="flex gap-3">
-                          <button className="bg-gray-50 hover:bg-gray-100 p-2 rounded">
+                          <button
+                            onClick={() => removeCarts(e)}
+                            className="bg-gray-50 hover:bg-gray-100 p-2 rounded"
+                          >
                             <MdDelete size="1.5em" />
                           </button>
-                          <p className="mb-2 text-lg font-semibold">Earphone</p>
+                          <p className="mb-2 text-lg font-semibold truncate">
+                            {e}
+                          </p>
                         </div>
                       </td>
                       <td className="justify-center md:justify-end md:flex mt-6">

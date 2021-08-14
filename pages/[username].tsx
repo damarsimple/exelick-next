@@ -3,18 +3,26 @@ import { NextPageContext } from "next";
 import withRouter from "next/dist/client/with-router";
 import Image from "next/image";
 
-import React from "react";
+import React, { useState } from "react";
+import { MdDelete } from "react-icons/md";
 import AppContainer from "../components/AppContainer";
 import Loader from "../components/BoxLoader";
 import ProductCard, { SkeletonProductCard } from "../components/ProductCard";
+import SearchBox from "../components/SearchBox";
 import { CORE_PAGE_INFO_FIELDS } from "../fragments/fragments";
+import { wildCardFormatter } from "../helpers/formatter";
+import { useCartsStore } from "../store/carts";
 import { User } from "../types/type";
 import { client } from "./_app";
 
 function Username({ user }: { user: User }) {
+  const [searchValue, setSearchValue] = useState("");
+
+  const { carts, setCarts, removeCarts } = useCartsStore();
+
   return (
     <AppContainer title={user.username} fullScreen>
-      <div className="grid grid-cols-12 h-full lg:container lg:mx-auto gap-3">
+      <div className="grid grid-cols-12 h-full  gap-3">
         <div className="col-span-12 md:col-span-6 lg:col-span-2 bg-gray-100 flex flex-col p-10  gap-6">
           <div className="flex flex-col text-center">
             <Image
@@ -30,34 +38,42 @@ function Username({ user }: { user: User }) {
           </div>
           <div className="text-sm p-2 bg-white rounded">{user.description}</div>
         </div>
-        <div className="col-span-12 md:col-span-6 lg:col-span-8 lg:max-h-full lg:overflow-x-auto">
-          <div className="hidden lg:block w-full h-56 bg-gray-200 mb-10 ">
+        <div className="gap-2 p-4 col-span-12 md:col-span-6 lg:col-span-8 lg:max-h-full lg:overflow-x-scroll">
+          <div className="bg-gray-200 relative" style={{ height: 400 }}>
             <Image
-              alt="Picture of the author"
-              width={1200}
-              height={300}
+              alt="Picture of the author cover"
+              layout="fill"
               objectFit="cover"
-              src={`https://picsum.photos/seed/${user.id}/300/300`}
+              src={`https://picsum.photos/seed/${user.id}/300/600`}
             />
           </div>
+          <SearchBox onChange={setSearchValue} placeholder="Cari Produk" />
           <Loader
-            className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 p-4"
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mt-4"
             query={gql`
               ${CORE_PAGE_INFO_FIELDS}
-              query UserProductByUsername($first: Int!, $after: String) {
-                userByUsername(username: "${user.username}") {
-                  products(first: $first, after: $after) {
-                    pageInfo{
-                        ...CorePageInfoField
-                    }
-                    edges {
-                      node {
-                        id
-                        name
-                        is_stackable
-                        price
-                        description
-                      }
+              query UserProductByUsername(
+                $first: Int!
+                $after: String
+                $name: String
+                $user_id: ID
+              ) {
+                products(
+                  first: $first
+                  after: $after
+                  name: $name
+                  user_id: $user_id
+                ) {
+                  pageInfo {
+                    ...CorePageInfoField
+                  }
+                  edges {
+                    node {
+                      id
+                      name
+                      is_stackable
+                      price
+                      description
                     }
                   }
                 }
@@ -65,12 +81,16 @@ function Username({ user }: { user: User }) {
             `}
             Component={ProductCard}
             SkeletonComponent={SkeletonProductCard}
-            fields="userByUsername.products"
+            fields="products"
             perPage={12}
+            variables={{
+              name: wildCardFormatter(searchValue),
+              user_id: user.id,
+            }}
           />
         </div>
         <div className="col-span-12 md:col-span-12 lg:col-span-2 bg-gray-100 flex flex-col  lg:max-h-full lg:overflow-x-auto  order-2 lg:order-last">
-          {[...Array(20)].map((e, i) => (
+          {carts.map((e, i) => (
             <div
               key={i}
               className="p-2 flex bg-white hover:bg-gray-100 cursor-pointer border-b border-gray-100"
@@ -84,27 +104,17 @@ function Username({ user }: { user: User }) {
                 />
               </div>
               <div className="flex-auto text-sm w-32">
-                <div className="font-bold">Product 1</div>
+                <div className="font-bold">Product 1 {e}</div>
                 <div className="truncate">Product 1 description</div>
                 <div className="text-gray-400">Qty: 2</div>
               </div>
               <div className="flex flex-col w-18 font-medium items-end">
-                <div className="w-4 h-4 mb-6 hover:bg-red-200 rounded-full cursor-pointer text-red-700">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="100%"
-                    height="100%"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    className="feather feather-trash-2 "
-                  >
-                    <polyline points="3 6 5 6 21 6"></polyline>
-                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                    <line x1="10" y1="11" x2="10" y2="17"></line>
-                    <line x1="14" y1="11" x2="14" y2="17"></line>
-                  </svg>
-                </div>
+                <button
+                  onClick={() => removeCarts(e)}
+                  className="w-4 h-4 mb-6 hover:bg-red-200 rounded-full cursor-pointer text-red-700"
+                >
+                  <MdDelete size="1.5em" />
+                </button>
                 $12.22
               </div>
             </div>

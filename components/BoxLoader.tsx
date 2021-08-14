@@ -18,6 +18,7 @@ interface BoxProps<T extends Id> {
   SkeletonComponent?: () => JSX.Element;
   className?: string;
   perPage?: number;
+  variables?: object;
 }
 
 interface PaginatorInfo {
@@ -37,6 +38,7 @@ export default function Loader<T extends Id>({
   SkeletonComponent,
   className,
   perPage,
+  variables,
 }: BoxProps<T>) {
   const PerPage = perPage ?? PER_PAGE_DEFAULT;
 
@@ -44,6 +46,7 @@ export default function Loader<T extends Id>({
     variables: {
       first: PerPage,
       after: "",
+      ...variables,
     },
   });
 
