@@ -1,12 +1,39 @@
 import "react-tabs/style/react-tabs.css";
 import "../styles/globals.css";
-
 import type { AppProps } from "next/app";
-
-import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  createHttpLink,
+} from "@apollo/client";
 import { relayStylePagination } from "@apollo/client/utilities";
+import { useAuthStore } from "../store/auth";
+import { setContext } from "@apollo/client/link/context";
+import { useEffect } from "react";
+import { getMyCredentials } from "../helpers/auth";
+import { ToastContainer } from "react-toastify";
+
+const httpLink = createHttpLink({
+  uri: process.env.NEXT_PUBLIC_GRAPHQL_URL,
+  credentials: "include",
+});
+
+const authLink = setContext((_, { headers }) => {
+  // get the authentication token from local storage if it exists
+  const { token } = useAuthStore.getState();
+  // return the headers to the context so httpLink can read them
+
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : "",
+    },
+  };
+});
 
 export const client = new ApolloClient({
+  link: authLink.concat(httpLink),
   uri: process.env.NEXT_PUBLIC_GRAPHQL_URL,
   cache: new InMemoryCache({
     typePolicies: {
@@ -61,9 +88,14 @@ export const client = new ApolloClient({
 });
 
 function MyApp({ Component, pageProps }: AppProps) {
+  useEffect(() => {
+    getMyCredentials();
+  });
+
   return (
     <ApolloProvider client={client}>
       <Component {...pageProps} />
+      <ToastContainer />
     </ApolloProvider>
   );
 }

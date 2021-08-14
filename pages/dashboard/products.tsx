@@ -1,15 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import DashboardContainer from "../../components/DashboardContainer";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-import ProductCard from "../../components/ProductCard";
+import ProductCard, { SkeletonProductCard } from "../../components/ProductCard";
 import Image from "next/image";
 import AppContainer from "../../components/AppContainer";
+import { gql } from "@apollo/client";
+import Loader from "../../components/BoxLoader";
+import { CORE_PAGE_INFO_FIELD } from "../../fragments/fragments";
+import { wildCardFormatter } from "../../helpers/formatter";
+import SearchBox from "../../components/SearchBox";
+import { useUserStore } from "../../store/user";
 
 export default function Index() {
+  const [searchValue, setSearchValue] = useState("");
+
+  const { user } = useUserStore();
+
   return (
     <AppContainer title="Product" fullScreen>
       <DashboardContainer>
         <div>
+          <div className="my-4">
+            <SearchBox onChange={setSearchValue} placeholder="Cari Produk" />
+          </div>
+
           <Tabs>
             <TabList>
               <Tab>Card View</Tab>
@@ -17,11 +31,46 @@ export default function Index() {
             </TabList>
 
             <TabPanel>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
-                {/* {[...Array(10)].map((e, i) => (
-                  <ProductCard key={i} />
-                ))} */}
-              </div>
+              <Loader
+                className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mt-4"
+                query={gql`
+                  ${CORE_PAGE_INFO_FIELD}
+                  query UserProductByUsername(
+                    $first: Int!
+                    $after: String
+                    $name: String
+                    $user_id: ID
+                  ) {
+                    products(
+                      first: $first
+                      after: $after
+                      name: $name
+                      user_id: $user_id
+                    ) {
+                      pageInfo {
+                        ...CorePageInfoField
+                      }
+                      edges {
+                        node {
+                          id
+                          name
+                          is_stackable
+                          price
+                          description
+                        }
+                      }
+                    }
+                  }
+                `}
+                Component={ProductCard}
+                SkeletonComponent={SkeletonProductCard}
+                fields="products"
+                perPage={12}
+                variables={{
+                  name: wildCardFormatter(searchValue),
+                  user_id: user?.id,
+                }}
+              />
             </TabPanel>
             <TabPanel>
               <section className="container mx-auto p-6 font-mono">

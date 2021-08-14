@@ -9,7 +9,10 @@ import AppContainer from "../components/AppContainer";
 import Loader from "../components/BoxLoader";
 import ProductCard, { SkeletonProductCard } from "../components/ProductCard";
 import SearchBox from "../components/SearchBox";
-import { CORE_PAGE_INFO_FIELDS } from "../fragments/fragments";
+import {
+  CORE_PAGE_INFO_FIELD,
+  CORE_USER_INFO_MINIMAL_FIELD,
+} from "../fragments/fragments";
 import { wildCardFormatter } from "../helpers/formatter";
 import { useCartsStore } from "../store/carts";
 import { User } from "../types/type";
@@ -51,7 +54,7 @@ function Username({ user }: { user: User }) {
           <Loader
             className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mt-4"
             query={gql`
-              ${CORE_PAGE_INFO_FIELDS}
+              ${CORE_PAGE_INFO_FIELD}
               query UserProductByUsername(
                 $first: Int!
                 $after: String
@@ -142,13 +145,10 @@ export async function getServerSideProps(context: NextPageContext) {
   const { data } = await client.query({
     variables: { username },
     query: gql`
+      ${CORE_USER_INFO_MINIMAL_FIELD}
       query UserByUsername($username: String!) {
         userByUsername(username: $username) {
-          id
-          name
-          username
-          tag
-          description
+          ...CoreUserInfoMinimalField
         }
       }
     `,

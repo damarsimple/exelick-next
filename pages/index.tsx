@@ -2,11 +2,11 @@ import { gql } from "@apollo/client";
 import AppContainer from "../components/AppContainer";
 import Loader from "../components/BoxLoader";
 import UserCard, { UserCardSkeleton } from "../components/UserCard";
-import { CORE_PAGE_INFO_FIELDS } from "../fragments/fragments";
+import { CORE_PAGE_INFO_FIELD } from "../fragments/fragments";
 import { User } from "../types/type";
 
 const USERS = gql`
-  ${CORE_PAGE_INFO_FIELDS}
+  ${CORE_PAGE_INFO_FIELD}
   query GetUsersQuery($first: Int!, $after: String) {
     users(first: $first, after: $after) {
       edges {

@@ -10,6 +10,7 @@ export interface User {
   stream_key: string;
   balance: number;
   banned_words: string;
+  productCount: number;
 }
 
 export interface Product {

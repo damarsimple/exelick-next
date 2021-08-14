@@ -1,12 +1,12 @@
 import create from "zustand";
 
-interface TodoState {
+interface CartStore {
   carts: string[];
   setCarts: (e: string[]) => void;
   removeCarts: (e: string) => void;
 }
 
-export const useCartsStore = create<TodoState>((set) => ({
+export const useCartsStore = create<CartStore>((set) => ({
   carts: [],
   setCarts: (carts) => set({ carts }),
   removeCarts: (e) =>
