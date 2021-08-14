@@ -1,0 +1,90 @@
+{
+    "__typename": "User",
+    "products({\"after\":\"\",\"first\":12,\"name\":\"%%\"})": {
+        "__typename": "ProductConnection",
+        "pageInfo": {
+            "__typename": "PageInfo",
+            "endCursor": "MTI=",
+            "currentPage": 1,
+            "count": 12,
+            "hasNextPage": true,
+            "total": 18
+        },
+        "edges": [{
+                "__typename": "ProductEdge",
+                "node": {
+                    "__ref": "Product:24"
+                }
+            },
+            {
+                "__typename": "ProductEdge",
+                "node": {
+                    "__ref": "Product:25"
+                }
+            },
+            {
+                "__typename": "ProductEdge",
+                "node": {
+                    "__ref": "Product:26"
+                }
+            },
+            {
+                "__typename": "ProductEdge",
+                "node": {
+                    "__ref": "Product:27"
+                }
+            },
+            {
+                "__typename": "ProductEdge",
+                "node": {
+                    "__ref": "Product:28"
+                }
+            },
+            {
+                "__typename": "ProductEdge",
+                "node": {
+                    "__ref": "Product:29"
+                }
+            },
+            {
+                "__typename": "ProductEdge",
+                "node": {
+                    "__ref": "Product:30"
+                }
+            },
+            {
+                "__typename": "ProductEdge",
+                "node": {
+                    "__ref": "Product:31"
+                }
+            },
+            {
+                "__typename": "ProductEdge",
+                "node": {
+                    "__ref": "Product:32"
+                }
+            },
+            {
+                "__typename": "ProductEdge",
+                "node": {
+                    "__ref": "Product:33"
+                }
+            },
+            {
+                "__typename": "ProductEdge",
+                "node": {
+                    "__ref": "Product:34"
+                }
+            },
+            {
+                "__typename": "ProductEdge",
+                "node": {
+                    "__ref": "Product:35"
+                }
+            }
+        ]
+    },
+    "products": {
+        "edges": []
+    }
+}
