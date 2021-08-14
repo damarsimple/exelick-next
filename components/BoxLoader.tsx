@@ -71,6 +71,7 @@ export default function Loader<T extends Id>({
           after: pageInfo.endCursor,
         },
       });
+      console.log("fetching more");
     }
   }, [PerPage, fetchMore, inView, pageInfo]);
 
@@ -86,7 +87,7 @@ export default function Loader<T extends Id>({
         ))}
       </div>
       <div ref={ref}>
-        <SkeletonGrid gridLength={1} />
+        {pageInfo?.hasNextPage && <SkeletonGrid gridLength={1} />}
       </div>
     </div>
   );

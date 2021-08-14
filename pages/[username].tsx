@@ -6,7 +6,7 @@ import Image from "next/image";
 import React from "react";
 import AppContainer from "../components/AppContainer";
 import Loader from "../components/BoxLoader";
-import ProductCard from "../components/ProductCard";
+import ProductCard, { SkeletonProductCard } from "../components/ProductCard";
 import { CORE_PAGE_INFO_FIELDS } from "../fragments/fragments";
 import { User } from "../types/type";
 import { client } from "./_app";
@@ -41,12 +41,12 @@ function Username({ user }: { user: User }) {
             />
           </div>
           <Loader
-            className="grid grid-cols-1 md:grid-cols-1 xl:grid-cols-3 gap-2 p-4"
+            className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 p-4"
             query={gql`
               ${CORE_PAGE_INFO_FIELDS}
-              query UserProductByUsername {
+              query UserProductByUsername($first: Int!, $after: String) {
                 userByUsername(username: "${user.username}") {
-                  products(first: 10, after: "") {
+                  products(first: $first, after: $after) {
                     pageInfo{
                         ...CorePageInfoField
                     }
@@ -64,6 +64,7 @@ function Username({ user }: { user: User }) {
               }
             `}
             Component={ProductCard}
+            SkeletonComponent={SkeletonProductCard}
             fields="userByUsername.products"
             perPage={12}
           />
