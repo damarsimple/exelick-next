@@ -42,6 +42,7 @@ export default function Login() {
     onCompleted: async (e) => {
       if (e.login.token) {
         setToken(e.login.token);
+        setUser(e.login.user);
 
         getMyCredentials();
 
