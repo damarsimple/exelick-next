@@ -300,7 +300,7 @@ export default function Checkout() {
                     <div className="flex flex-col gap-2">
                       <div className="flex justify-center">
                         <Image
-                          src={payment?.qr_url}
+                          src={payment?.qr_url ?? ""}
                           width={320}
                           height={320}
                           alt="QR Code"
