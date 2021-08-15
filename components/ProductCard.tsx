@@ -5,6 +5,7 @@ import { AiFillMinusCircle, AiFillPlusCircle } from "react-icons/ai";
 import { Product } from "../types/type";
 import { formatCurrency } from "../helpers/formatter";
 import { useCartsStore } from "../store/carts";
+import { toast } from "react-toastify";
 
 export default function ProductCard(e: Product) {
   const [count, setCount] = useState(1);
@@ -13,7 +14,24 @@ export default function ProductCard(e: Product) {
   const { carts, setCarts } = useCartsStore();
 
   const handleAddToCarts = () => {
-    setCarts([...carts, e.name]);
+    const ids = carts.map((e) => e.product.user_id);
+
+    if (carts.length >= 1) {
+      const first = ids[0];
+
+      if (e.user_id != first) {
+        toast.error("Anda tidak mencampur produk dari user lain ...");
+        return;
+      }
+    }
+
+    setCarts([
+      ...carts,
+      {
+        product: e,
+        qty: 1,
+      },
+    ]);
   };
 
   return (

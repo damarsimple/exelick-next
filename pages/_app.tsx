@@ -1,4 +1,5 @@
 import "react-tabs/style/react-tabs.css";
+import "react-toastify/dist/ReactToastify.css";
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import {
@@ -95,7 +96,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ApolloProvider client={client}>
       <Component {...pageProps} />
-      <ToastContainer />
+      <ToastContainer position="bottom-right" />
     </ApolloProvider>
   );
 }

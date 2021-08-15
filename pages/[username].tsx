@@ -2,6 +2,7 @@ import { gql } from "@apollo/client";
 import { NextPageContext } from "next";
 import withRouter from "next/dist/client/with-router";
 import Image from "next/image";
+import Link from "next/link";
 
 import React, { useState } from "react";
 import { MdDelete } from "react-icons/md";
@@ -13,7 +14,7 @@ import {
   CORE_PAGE_INFO_FIELD,
   CORE_USER_INFO_MINIMAL_FIELD,
 } from "../fragments/fragments";
-import { wildCardFormatter } from "../helpers/formatter";
+import { formatCurrency, wildCardFormatter } from "../helpers/formatter";
 import { useCartsStore } from "../store/carts";
 import { User } from "../types/type";
 import { client } from "./_app";
@@ -74,6 +75,7 @@ function Username({ user }: { user: User }) {
                     node {
                       id
                       name
+                      user_id
                       is_stackable
                       price
                       description
@@ -94,7 +96,7 @@ function Username({ user }: { user: User }) {
           />
         </div>
         <div className="col-span-12 md:col-span-12 lg:col-span-2 bg-gray-100 flex flex-col  lg:max-h-full lg:overflow-x-auto  order-2 lg:order-last">
-          {carts.map((e, i) => (
+          {carts.map(({ qty, product }, i) => (
             <div
               key={i}
               className="p-2 flex bg-white hover:bg-gray-100 cursor-pointer border-b border-gray-100"
@@ -108,32 +110,41 @@ function Username({ user }: { user: User }) {
                 />
               </div>
               <div className="flex-auto text-sm w-32">
-                <div className="font-bold">Product 1 {e}</div>
-                <div className="truncate">Product 1 description</div>
-                <div className="text-gray-400">Qty: 2</div>
+                <div className="font-bold">{product.name}</div>
+                <div className="truncate">{product.description}</div>
+                <div className="text-gray-400">Qty: {qty}</div>
               </div>
               <div className="flex flex-col w-18 font-medium items-end">
                 <button
-                  onClick={() => removeCarts(e)}
+                  onClick={() => removeCarts(product)}
                   className="w-4 h-4 mb-6 hover:bg-red-200 rounded-full cursor-pointer text-red-700"
                 >
                   <MdDelete size="1.5em" />
                 </button>
-                $12.22
+                {formatCurrency(product.price)}
               </div>
             </div>
           ))}
           <div className="p-4 justify-center flex">
-            <button
-              className="bg-white hover:bg-gray-50 text-base  undefined  hover:scale-110 focus:outline-none flex justify-center px-4 py-2 rounded font-bold cursor-pointer 
-        hover:bg-teal-700 hover:text-teal-100 
-        bg-teal-100 
-        text-teal-700 
-        border duration-200 ease-in-out 
-        border-teal-600 transition"
-            >
-              Checkout Rp 100.000
-            </button>
+            <Link href="/checkout">
+              <a>
+                <button
+                  className="bg-white hover:bg-gray-50 text-base  undefined  hover:scale-110 focus:outline-none flex justify-center px-4 py-2 rounded font-bold cursor-pointer 
+                              hover:bg-teal-700 hover:text-teal-100 
+                              bg-teal-100 
+                              text-teal-700 
+                              border duration-200 ease-in-out 
+                              border-teal-600 transition"
+                >
+                  Checkout{" "}
+                  {formatCurrency(
+                    carts.reduce((e, i) => {
+                      return e + i.qty * (i.product.price ?? 0);
+                    }, 0)
+                  )}
+                </button>
+              </a>
+            </Link>
           </div>
         </div>
       </div>
