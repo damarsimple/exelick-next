@@ -1,4 +1,9 @@
-import { DocumentNode, gql, useQuery } from "@apollo/client";
+import {
+  DocumentNode,
+  gql,
+  useQuery,
+  WatchQueryFetchPolicy,
+} from "@apollo/client";
 import React, { useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { User } from "../types/type";
@@ -19,6 +24,7 @@ interface BoxProps<T extends Id> {
   className?: string;
   perPage?: number;
   variables?: object;
+  fetchPolicy?: WatchQueryFetchPolicy;
 }
 
 interface PaginatorInfo {
@@ -39,10 +45,12 @@ export default function Loader<T extends Id>({
   className,
   perPage,
   variables,
+  fetchPolicy,
 }: BoxProps<T>) {
   const PerPage = perPage ?? PER_PAGE_DEFAULT;
 
   const { loading, error, data, fetchMore, refetch } = useQuery(query, {
+    fetchPolicy,
     variables: {
       first: PerPage,
       after: "",

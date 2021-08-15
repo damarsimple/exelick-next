@@ -86,6 +86,7 @@ function Username({ user }: { user: User }) {
             SkeletonComponent={SkeletonProductCard}
             fields="products"
             perPage={12}
+            fetchPolicy="network-only"
             variables={{
               name: wildCardFormatter(searchValue),
               user_id: user.id,
