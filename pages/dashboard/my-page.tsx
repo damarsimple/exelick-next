@@ -4,10 +4,10 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import AppContainer from "../../components/AppContainer";
 import DashboardContainer from "../../components/DashboardContainer";
+import PictureUpload from "../../components/PictureUpload";
 import { CORE_USER_INFO_MINIMAL_FIELD } from "../../fragments/fragments";
-import { getMyCredentials } from "../../helpers/auth";
 import { useUserStore } from "../../store/user";
-import { User } from "../../types/type";
+import { Picture, User } from "../../types/type";
 
 const GET_DATA = gql`
   query {
@@ -44,6 +44,28 @@ const UPDATE_MUTATION = gql`
     }
   }
 `;
+
+const UPDATE_MUTATION_PICTURE = gql`
+  mutation UpdateMePicture(
+    $id: ID!
+    $profilepicture: PictureAssignInput
+    $banner: PictureAssignInput
+  ) {
+    update_user_picture(
+      id: $id
+      profilepicture: $profilepicture
+      banner: $banner
+    ) {
+      profilepicture {
+        real_path
+      }
+      banner {
+        real_path
+      }
+    }
+  }
+`;
+
 export default function Index() {
   const { data, loading, error, refetch } = useQuery<{ me: User }>(GET_DATA);
 
@@ -78,10 +100,29 @@ export default function Index() {
   const [
     mutateFunction,
     { data: mutationData, loading: mutationLoading, error: mutationError },
-  ] = useMutation(UPDATE_MUTATION, {
+  ] = useMutation<{ updateUser: User }>(UPDATE_MUTATION, {
     onCompleted: () => {
       refetch();
       toast.success("Berhasil mengubah data mu <3");
+    },
+  });
+
+  const [pictures, setPictures] = useState<{
+    profilepicture?: Picture;
+    banner?: Picture;
+  }>({});
+
+  const [
+    mutatePictureFunction,
+    {
+      data: mutationDataPicture,
+      loading: mutationLoadingPicture,
+      error: mutationErrorPicture,
+    },
+  ] = useMutation<{ update_user_picture: User }>(UPDATE_MUTATION_PICTURE, {
+    onCompleted: () => {
+      refetch();
+      toast.success("Berhasil mengubah gambar mu <3");
     },
   });
 
@@ -95,15 +136,44 @@ export default function Index() {
         delete cp[x];
       }
     }
-    mutateFunction({ variables: { ...user, ...cp } }).then((e) => {
-      setUser(e.data.updateUser);
-    });
+    // mutateFunction({ variables: { ...user, ...cp } }).then((e) => {
+    //   setUser(e.data?.updateUser);
+    // });
+
+    if (pictures.banner || pictures.profilepicture) {
+      const pictureData: { [e: string]: object } = {};
+
+      if (pictures.banner) {
+        pictureData["banner"] = { id: pictures.banner.id };
+      }
+      if (pictures.profilepicture) {
+        pictureData["profilepicture"] = { id: pictures.profilepicture.id };
+      }
+
+      console.log(pictureData);
+
+      mutatePictureFunction({
+        variables: { id: user?.id, ...pictureData },
+      }).then((e) => {
+        toast.success("Berhasil mengubah gambar mu !");
+      });
+    }
   };
 
   return (
     <AppContainer title="My Page" fullScreen>
       <DashboardContainer>
         <div className="flex flex-col gap-2">
+          <PictureUpload
+            name="Upload Gambar Profile"
+            onUploadFinish={(e) =>
+              setPictures({ ...pictures, profilepicture: e })
+            }
+          />
+          <PictureUpload
+            name="Upload Gambar Banner"
+            onUploadFinish={(e) => setPictures({ ...pictures, banner: e })}
+          />
           {userInputMap.map((e, i) =>
             loading ? (
               <div key={i} className="pb-6 md:pb-0 flex flex-col">

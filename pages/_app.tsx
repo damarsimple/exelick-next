@@ -7,6 +7,7 @@ import {
   InMemoryCache,
   ApolloProvider,
   createHttpLink,
+  ApolloLink,
 } from "@apollo/client";
 import { relayStylePagination } from "@apollo/client/utilities";
 import { useAuthStore } from "../store/auth";
@@ -14,8 +15,14 @@ import { setContext } from "@apollo/client/link/context";
 import { useEffect } from "react";
 import { getMyCredentials } from "../helpers/auth";
 import { ToastContainer } from "react-toastify";
+import { createUploadLink } from "apollo-upload-client";
 
-const httpLink = createHttpLink({
+// const httpLink = createHttpLink({
+//   uri: process.env.NEXT_PUBLIC_GRAPHQL_URL,
+//   credentials: "include",
+// });
+
+const uploadLink = createUploadLink({
   uri: process.env.NEXT_PUBLIC_GRAPHQL_URL,
   credentials: "include",
 });
@@ -34,7 +41,7 @@ const authLink = setContext((_, { headers }) => {
 });
 
 export const client = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: authLink.concat(uploadLink as unknown as ApolloLink),
   uri: process.env.NEXT_PUBLIC_GRAPHQL_URL,
   cache: new InMemoryCache({
     typePolicies: {
