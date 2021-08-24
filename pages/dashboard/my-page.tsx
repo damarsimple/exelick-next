@@ -97,6 +97,11 @@ export default function Index() {
     },
   ];
 
+  const [pictures, setPictures] = useState<{
+    profilepicture?: Picture;
+    banner?: Picture;
+  }>({});
+
   const [
     mutateFunction,
     { data: mutationData, loading: mutationLoading, error: mutationError },
@@ -106,11 +111,6 @@ export default function Index() {
       toast.success("Berhasil mengubah data mu <3");
     },
   });
-
-  const [pictures, setPictures] = useState<{
-    profilepicture?: Picture;
-    banner?: Picture;
-  }>({});
 
   const [
     mutatePictureFunction,
@@ -136,9 +136,9 @@ export default function Index() {
         delete cp[x];
       }
     }
-    // mutateFunction({ variables: { ...user, ...cp } }).then((e) => {
-    //   setUser(e.data?.updateUser);
-    // });
+    mutateFunction({ variables: { ...user, ...cp } }).then((e) => {
+      setUser(e.data?.updateUser);
+    });
 
     if (pictures.banner || pictures.profilepicture) {
       const pictureData: { [e: string]: object } = {};

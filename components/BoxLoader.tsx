@@ -1,6 +1,7 @@
 import {
   DocumentNode,
   gql,
+  useMutation,
   useQuery,
   WatchQueryFetchPolicy,
 } from "@apollo/client";
@@ -11,6 +12,8 @@ import UserCard, { UserCardSkeleton } from "./UserCard";
 
 import { get } from "lodash";
 import { useInView } from "react-intersection-observer";
+import { toast } from "react-toastify";
+import Link from "next/link";
 
 interface Id {
   id: string;
@@ -18,6 +21,7 @@ interface Id {
 
 interface BoxProps<T extends Id> {
   query: DocumentNode;
+  deleteQuery?: DocumentNode;
   fields: string;
   Component: (e: T) => JSX.Element;
   SkeletonComponent?: () => JSX.Element;
@@ -25,6 +29,8 @@ interface BoxProps<T extends Id> {
   perPage?: number;
   variables?: object;
   fetchPolicy?: WatchQueryFetchPolicy;
+  withEditDelete?: boolean;
+  editUrl?: string;
 }
 
 interface PaginatorInfo {
@@ -46,7 +52,19 @@ export default function Loader<T extends Id>({
   perPage,
   variables,
   fetchPolicy,
+  deleteQuery,
+  editUrl,
+  withEditDelete,
 }: BoxProps<T>) {
+  const [
+    mutateFunction,
+    {
+      data: dataDeleteMutation,
+      loading: mutationLoading,
+      error: mutationError,
+    },
+  ] = useMutation(deleteQuery ?? gql``);
+
   const PerPage = perPage ?? PER_PAGE_DEFAULT;
 
   const { loading, error, data, fetchMore, refetch } = useQuery(query, {
@@ -86,6 +104,17 @@ export default function Loader<T extends Id>({
     }
   }, [PerPage, fetchMore, inView, pageInfo]);
 
+  const handleDelete = (e: T) => {
+    mutateFunction({ variables: { id: e.id } })
+      .then((e) => {
+        toast.success("Berhasil menghapus data");
+        refetch();
+      })
+      .catch((e) => {
+        toast.error("Gagal menghapus data");
+      });
+  };
+
   if (loading) return <>{<SkeletonGrid gridLength={1} />}</>;
 
   if (error) return <p>Error :( {error.message}</p>;
@@ -94,7 +123,26 @@ export default function Loader<T extends Id>({
     <div>
       <div className={className}>
         {datas.map((e, i) => (
-          <MakeComponent {...e.node} key={`${e.node.id}`} />
+          <div key={`${e.node.id}`}>
+            {withEditDelete && (
+              <div className="flex justify-between">
+                <Link href={editUrl + e.node.id}>
+                  <a className="w-full">
+                    <button className="p-4 w-full bg-yellow-400 hover:bg-yellow-500 font-semibold">
+                      EDIT
+                    </button>
+                  </a>
+                </Link>
+                <button
+                  onClick={() => handleDelete(e.node)}
+                  className="p-4 w-full bg-red-400 hover:bg-red-500 font-semibold"
+                >
+                  DELETE
+                </button>
+              </div>
+            )}
+            <MakeComponent {...e.node} />
+          </div>
         ))}
       </div>
       <div ref={ref}>
