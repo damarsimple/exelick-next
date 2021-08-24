@@ -6,13 +6,10 @@ import { useCartsStore } from "../store/carts";
 import Image from "next/image";
 import { formatCurrency } from "../helpers/formatter";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import {
-  Purchase,
-  Transaction,
-  TripayTransactionResponse,
-} from "../types/type";
+import { Purchase, Transaction } from "../types/type";
 import { toast } from "react-toastify";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
+import ImageContainer from "../components/ImageContainer";
 export default function Checkout() {
   const { carts, removeCarts, setQty } = useCartsStore();
 
@@ -23,7 +20,7 @@ export default function Checkout() {
         transaction: Transaction;
         success: boolean;
         message: string;
-        payment: TripayTransactionResponse;
+        // payment: TripayTransactionResponse;
       };
     }>(
       gql`
@@ -95,9 +92,7 @@ export default function Checkout() {
 
   const [onPayment, setOnPayment] = useState(false);
 
-  const [payment, setPayment] = useState<null | TripayTransactionResponse>(
-    null
-  );
+  const [payment, setPayment] = useState<null>(null);
 
   const [transaction, setTransaction] = useState<null | Transaction>(null);
 
@@ -145,14 +140,14 @@ export default function Checkout() {
         transaction,
         success,
         message,
-        payment: rPayment,
+        // payment: rPayment,
       } = e.data?.createPurchase;
       if (!success) {
         toast.error(message);
       }
 
       setOnPayment(true);
-      setPayment(rPayment);
+      // setPayment(rPayment);
       setTransaction(transaction);
       setPurchase(purchase);
       setTabIndex(1);
@@ -204,8 +199,9 @@ export default function Checkout() {
                         <tr key={i}>
                           <td className="hidden pb-4 md:table-cell">
                             <button className="w-10 h-10 rounded relative">
-                              <Image
-                                src="https://dretail.id/asset/img/image/features/payment/qris.png"
+                              <ImageContainer
+                                fallback="payment_method"
+                                src={product.cover?.real_path}
                                 alt="Thumbnail"
                                 layout="fill"
                               />
@@ -299,15 +295,16 @@ export default function Checkout() {
                   <TabPanel>
                     <div className="flex flex-col gap-2">
                       <div className="flex justify-center">
-                        <Image
+                        {/* <ImageContainer
                           src={payment?.qr_url ?? ""}
                           width={320}
                           height={320}
                           alt="QR Code"
-                        />
+                        /> */}
                       </div>
                       <div>
-                        {payment?.instructions?.map((e) => (
+                        y
+                        {/* {payment?.instructions?.map((e) => (
                           <div key={e.title}>
                             <h1 className="text-xl font-semibold">{e.title}</h1>
                             {e.steps.map((e, i) => (
@@ -316,11 +313,11 @@ export default function Checkout() {
                               </p>
                             ))}
                           </div>
-                        ))}
+                        ))} */}
                       </div>
 
                       <div>
-                        <a
+                        {/* <a
                           href={payment?.checkout_url}
                           target="_blank"
                           rel="noopener noreferrer"
@@ -328,7 +325,7 @@ export default function Checkout() {
                           <button className="text-lg font-semibold uppercase w-full p-4 shadow rounded bg-gray-100 hover:bg-gray-200">
                             <h1>Link Checkout</h1>
                           </button>
-                        </a>
+                        </a> */}
                       </div>
                     </div>
                   </TabPanel>

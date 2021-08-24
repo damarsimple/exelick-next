@@ -10,6 +10,7 @@ import { CORE_PAGE_INFO_FIELD } from "../../fragments/fragments";
 import { wildCardFormatter } from "../../helpers/formatter";
 import SearchBox from "../../components/SearchBox";
 import { useUserStore } from "../../store/user";
+import ImageContainer from "../../components/ImageContainer";
 
 export default function Index() {
   const [searchValue, setSearchValue] = useState("");
@@ -90,7 +91,8 @@ export default function Index() {
                             <td className="px-4 py-3 border">
                               <div className="flex items-center text-sm">
                                 <div className="relative w-8 h-8 mr-3 md:block">
-                                  <Image
+                                  <ImageContainer
+                                    fallback="product"
                                     alt="Picture of the author"
                                     width={50}
                                     height={50}

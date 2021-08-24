@@ -31,6 +31,8 @@ export interface User {
   banned_words: string[];
   productCount: number;
   products: Maybe<ProductConnection>;
+  profilepicture?: Maybe<Picture>;
+  banner?: Maybe<Picture>;
 }
 
 export interface UserSocial {
@@ -39,9 +41,9 @@ export interface UserSocial {
 }
 
 export enum SocialType {
-  Facebook = 'FACEBOOK',
-  Twitter = 'TWITTER',
-  Youtube = 'YOUTUBE',
+  Facebook = "FACEBOOK",
+  Twitter = "TWITTER",
+  Youtube = "YOUTUBE",
 }
 
 export interface OverlaySetting {
@@ -61,30 +63,30 @@ export interface OverlaySetting {
 }
 
 export enum RunningTextType {
-  Latest = 'LATEST',
-  Top = 'TOP',
+  Latest = "LATEST",
+  Top = "TOP",
 }
 export enum OverlayTheme {
-  Default = 'DEFAULT',
-  Simple = 'SIMPLE',
-  Fun = 'FUN',
-  Badut = 'BADUT',
+  Default = "DEFAULT",
+  Simple = "SIMPLE",
+  Fun = "FUN",
+  Badut = "BADUT",
 }
 export enum SeparatorType {
-  Dot = 'DOT',
-  Icon = 'ICON',
+  Dot = "DOT",
+  Icon = "ICON",
 }
 export enum Speed {
-  Slow = 'SLOW',
-  Normal = 'NORMAL',
-  Fast = 'FAST',
+  Slow = "SLOW",
+  Normal = "NORMAL",
+  Fast = "FAST",
 }
 export enum OverlayType {
-  Notification = 'NOTIFICATION',
-  Leaderboard = 'LEADERBOARD',
-  Goal = 'GOAL',
-  Running_text = 'RUNNING_TEXT',
-  Qr_code = 'QR_CODE',
+  Notification = "NOTIFICATION",
+  Leaderboard = "LEADERBOARD",
+  Goal = "GOAL",
+  Running_text = "RUNNING_TEXT",
+  Qr_code = "QR_CODE",
 }
 export interface ServerMetadata {
   hostname: string;
@@ -145,6 +147,8 @@ export interface Product {
   price: Maybe<number>;
   user_id: string;
   description: Maybe<string>;
+
+  cover?: Maybe<Picture>;
 }
 
 export interface PurchaseProductPivot {
@@ -225,7 +229,6 @@ export interface PurchaseData {
   success: boolean;
   purchase: Maybe<Purchase>;
   transaction: Maybe<Transaction>;
-  payment: Maybe<TripayTransactionResponse>;
 }
 
 export interface Purchase {
@@ -256,42 +259,6 @@ export interface Transaction {
   user: User;
 }
 
-export interface TripayTransactionResponse {
-  reference: string;
-  merchant_ref: string;
-  payment_selection_type: string;
-  payment_method: string;
-  payment_name: string;
-  customer_name: string;
-  customer_email: string;
-  customer_phone: string;
-  amount: number;
-  fee_merchant: number;
-  fee_customer: number;
-  total_fee: number;
-  amount_received: number;
-  checkout_url: string;
-  status: string;
-  expired_time: number;
-  order_items: TripayOrderItem[];
-  instructions: TripayInstruction[];
-  qr_string: string;
-  qr_url: string;
-}
-
-export interface TripayOrderItem {
-  sku: string;
-  name: string;
-  price: number;
-  quantity: number;
-  subtotal: number;
-}
-
-export interface TripayInstruction {
-  steps: string[];
-  title: string;
-}
-
 export interface login {
   email: string;
   password: string;
@@ -303,19 +270,24 @@ export interface LoginOutput {
   message: Maybe<string>;
 }
 
-export enum PaymentMethodEnum {
-  Qris = 'QRIS',
-}
-export interface Game {
+export interface Picture {
   id: string;
   name: string;
   created_at: string;
   updated_at: string;
+  cid: Maybe<string>;
+  original_size: number;
+  compressed_size: number;
+  real_path: string;
+  path: string;
 }
 
-export interface Photo {
+export enum PaymentMethodEnum {
+  Qris = "QRIS",
+}
+export interface Game {
   id: string;
-  name: Maybe<string>;
+  name: string;
   created_at: string;
   updated_at: string;
 }
@@ -334,10 +306,18 @@ export interface Video {
   updated_at: string;
 }
 
+export interface OyRequestTransactionResponse {
+  payment_link_id: string;
+  message: string;
+  email_status: string;
+  url: string;
+  status: boolean;
+}
+
 /** The available directions for ordering a list of records. */
 export enum SortOrder {
-  Asc = 'ASC',
-  Desc = 'DESC',
+  Asc = "ASC",
+  Desc = "DESC",
 }
 /** Allows ordering a list of records. */
 export interface OrderByClause {
@@ -383,9 +363,9 @@ export interface SimplePaginatorInfo {
 
 /** Specify if you want to include or exclude trashed results from a query. */
 export enum Trashed {
-  Only = 'ONLY',
-  With = 'WITH',
-  Without = 'WITHOUT',
+  Only = "ONLY",
+  With = "WITH",
+  Without = "WITHOUT",
 }
 export interface meArgs {}
 
@@ -453,4 +433,8 @@ export interface createPurchaseArgs {
 
 export interface loginArgs {
   input: login;
+}
+
+export interface upload_pictureArgs {
+  file: File;
 }

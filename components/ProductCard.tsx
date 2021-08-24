@@ -6,6 +6,7 @@ import { Product } from "../types/type";
 import { formatCurrency } from "../helpers/formatter";
 import { useCartsStore } from "../store/carts";
 import { toast } from "react-toastify";
+import ImageContainer from "./ImageContainer";
 
 export default function ProductCard(e: Product) {
   const [count, setCount] = useState(1);
@@ -42,13 +43,14 @@ export default function ProductCard(e: Product) {
         </h1>
         <p className="text-gray-600 text-sm mt-1 truncate">{e.description}</p>
       </div>
-      <div className="flex h-80 w-80 overflow-hidden relative">
-        <Image
+      <div className="flex h-80 w-80 overflow-hidden relative justify-center">
+        <ImageContainer
+          fallback="product"
           className="h-80 w-80 overflow-hidden"
           alt={"Picture of the " + e.name}
           layout="fill"
-          objectFit="cover"
-          src={`https://picsum.photos/seed/${e.id}/200/200`}
+          objectFit="contain"
+          src={e.cover?.real_path}
         />
       </div>
       <div className="grid grid-cols-1 px-4 py-2 bg-gray-900 gap-2">

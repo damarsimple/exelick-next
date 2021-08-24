@@ -2,13 +2,15 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { User } from "../types/type";
+import ImageContainer from "./ImageContainer";
 
 export default function UserCard(e: User) {
   return (
     <div className="flex flex-col gap-2 text-center shadow rounded p-4">
-      <Image
+      <ImageContainer
+        fallback="profile"
         className="rounded-full h-24 w-24"
-        src={`https://picsum.photos/seed/${e.id}/200/300`}
+        src={e.profilepicture?.real_path}
         alt="Picture of the author"
         width={500}
         height={500}

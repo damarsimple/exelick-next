@@ -3,6 +3,7 @@ import DashboardContainer from "../../components/DashboardContainer";
 import Image from "next/image";
 import AppContainer from "../../components/AppContainer";
 import { formatCurrency } from "../../helpers/formatter";
+import ImageContainer from "../../components/ImageContainer";
 
 export default function Index() {
   return (
@@ -24,7 +25,8 @@ export default function Index() {
                   <td className="px-4 py-3 border">
                     <div className="flex items-center text-sm">
                       <div className="relative w-8 h-8 mr-3 rounded-full md:block">
-                        <Image
+                        <ImageContainer
+                          fallback="payment_method"
                           alt="Picture of the author"
                           width={50}
                           height={50}

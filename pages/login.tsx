@@ -10,6 +10,7 @@ import { CORE_USER_INFO_MINIMAL_FIELD } from "../fragments/fragments";
 import { client } from "./_app";
 import { useUserStore } from "../store/user";
 import { getMyCredentials } from "../helpers/auth";
+import ImageContainer from "../components/ImageContainer";
 
 const LOGIN = gql`
   ${CORE_USER_INFO_MINIMAL_FIELD}
@@ -71,7 +72,8 @@ export default function Login() {
         <div className="m-auto">
           <div className="flex flex-col overflow-hidden bg-white rounded-md shadow-lg max md:flex-row md:flex-1 lg:max-w-screen-md">
             <div className="p-4 py-6 text-white md:w-80 md:flex-shrink-0 md:flex md:flex-col md:items-center md:justify-evenly">
-              <Image
+              <ImageContainer
+                fallback="profile"
                 className="rounded-full h-24 w-24 "
                 src="https://trakteer.id/storage/images/avatar/ava-kqwK2sVxMEXfACgq0luplMIrcWAm9eGA1617518306.jpg"
                 alt="Picture of the author"

@@ -8,6 +8,7 @@ import React, { useState } from "react";
 import { MdDelete } from "react-icons/md";
 import AppContainer from "../components/AppContainer";
 import Loader from "../components/BoxLoader";
+import ImageContainer from "../components/ImageContainer";
 import ProductCard, { SkeletonProductCard } from "../components/ProductCard";
 import SearchBox from "../components/SearchBox";
 import {
@@ -29,9 +30,10 @@ function Username({ user }: { user: User }) {
       <div className="grid grid-cols-12 h-full  gap-3">
         <div className="col-span-12 md:col-span-6 lg:col-span-2 bg-gray-100 flex flex-col p-10  gap-6">
           <div className="flex flex-col text-center">
-            <Image
+            <ImageContainer
               className="rounded-full h-24 w-24 "
-              src={`https://picsum.photos/seed/${user.id}/300/300`}
+              src={user.profilepicture?.real_path}
+              fallback={"profile"}
               alt="Picture of the author"
               width={500}
               height={500}
@@ -44,11 +46,12 @@ function Username({ user }: { user: User }) {
         </div>
         <div className="gap-2 p-4 col-span-12 md:col-span-6 lg:col-span-8 lg:max-h-full lg:overflow-x-scroll">
           <div className="bg-gray-200 relative" style={{ height: 400 }}>
-            <Image
+            <ImageContainer
               alt="Picture of the author cover"
               layout="fill"
               objectFit="cover"
-              src={`https://picsum.photos/seed/${user.id}/300/600`}
+              fallback="banner"
+              src={user.banner?.real_path}
             />
           </div>
           <SearchBox onChange={setSearchValue} placeholder="Cari Produk" />
@@ -79,6 +82,9 @@ function Username({ user }: { user: User }) {
                       is_stackable
                       price
                       description
+                      cover {
+                        real_path
+                      }
                     }
                   }
                 }
@@ -102,11 +108,12 @@ function Username({ user }: { user: User }) {
               className="p-2 flex bg-white hover:bg-gray-100 cursor-pointer border-b border-gray-100"
             >
               <div className="p-2 w-12">
-                <Image
-                  alt="Picture of the author"
+                <ImageContainer
+                  fallback="product"
+                  alt="Product"
                   width={50}
                   height={50}
-                  src={`https://picsum.photos/seed/${user.id}/50/50`}
+                  src={product.cover?.real_path}
                 />
               </div>
               <div className="flex-auto text-sm w-32">
@@ -161,6 +168,12 @@ export async function getServerSideProps(context: NextPageContext) {
       query UserByUsername($username: String!) {
         userByUsername(username: $username) {
           ...CoreUserInfoMinimalField
+          profilepicture {
+            real_path
+          }
+          banner {
+            real_path
+          }
         }
       }
     `,

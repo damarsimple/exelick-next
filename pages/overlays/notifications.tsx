@@ -9,6 +9,7 @@ import {
   useSpring,
   useTransition,
 } from "react-spring";
+import ImageContainer from "../../components/ImageContainer";
 
 const DonationImage = () => {
   const styles = useSpring({
@@ -20,7 +21,8 @@ const DonationImage = () => {
   return (
     <div className="flex justify-center m-10">
       <animated.div style={styles}>
-        <Image
+        <ImageContainer
+          fallback="profile"
           className="rounded-full h-24 w-24 "
           src="https://trakteer.id/storage/images/avatar/ava-kqwK2sVxMEXfACgq0luplMIrcWAm9eGA1617518306.jpg"
           alt="Picture of the author"

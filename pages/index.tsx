@@ -17,6 +17,9 @@ const USERS = gql`
           username
           description
           tag
+          profilepicture {
+            real_path
+          }
         }
       }
       pageInfo {

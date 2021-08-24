@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import ImageContainer from "./ImageContainer";
 
 // https://stackoverflow.com/questions/58434389/typescript-deep-keyof-of-a-nested-object
 
@@ -70,7 +71,8 @@ export default function Table<T>(props: TableProp<T>) {
             <td className="px-4 py-3 border">
               <div className="flex items-center text-sm">
                 <div className="relative w-8 h-8 mr-3 rounded-full md:block">
-                  <Image
+                  <ImageContainer
+                    fallback="profile"
                     alt="Picture of the author"
                     width={50}
                     height={50}
