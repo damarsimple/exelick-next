@@ -73,7 +73,7 @@ export default function Login() {
               <ImageContainer
                 fallback="profile"
                 className="rounded-full h-24 w-24 "
-                src="https://trakteer.id/storage/images/avatar/ava-kqwK2sVxMEXfACgq0luplMIrcWAm9eGA1617518306.jpg"
+                src={"/android-icon-192x192.png"}
                 alt="Picture of the author"
                 height={300}
                 width={300}
