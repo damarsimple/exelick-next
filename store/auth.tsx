@@ -14,7 +14,7 @@ export const useAuthStore = create<AuthState>(
     }),
     {
       name: "token-storage",
-      getStorage: () => sessionStorage,
+      getStorage: () => localStorage,
     }
   )
 );
