@@ -12,7 +12,7 @@ import {
 import { relayStylePagination } from "@apollo/client/utilities";
 import { useAuthStore } from "../store/auth";
 import { setContext } from "@apollo/client/link/context";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getMyCredentials } from "../helpers/auth";
 import { ToastContainer } from "react-toastify";
 import { createUploadLink } from "apollo-upload-client";
@@ -96,10 +96,6 @@ export const client = new ApolloClient({
 });
 
 function MyApp({ Component, pageProps }: AppProps) {
-  useEffect(() => {
-    getMyCredentials();
-  });
-
   return (
     <ApolloProvider client={client}>
       <Component {...pageProps} />
