@@ -61,6 +61,7 @@ export default function PictureUpload(e: {
             {!mutationLoading && (
               <input
                 type="file"
+                accept="image/*"
                 className="input-field inline-flex items-baseline border-none shadow-md bg-white placeholder-blue w-full p-4 no-outline text-dusty-blue-darker"
                 onChange={(x) => {
                   //@ts-ignore
