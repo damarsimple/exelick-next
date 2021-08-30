@@ -168,7 +168,7 @@ export default function AppContainer({
 
       <div className={fullScreen ? "h-screen" : ""}>
         {!without?.includes("navbar") && (
-          <nav className="bg-primary-accent fixed top-0 w-full shadow  p-1 md:p-3 flex justify-between z-50">
+          <nav className="bg-dark fixed top-0 w-full shadow  p-1 md:p-3 flex justify-between z-50">
             <div>
               <Link href="/">
                 <a className="flex gap-1">
@@ -177,12 +177,12 @@ export default function AppContainer({
                     height={30}
                     src="/android-icon-96x96.png"
                   />
-                  <h1 className="text-xl font-bold">EXLUNODE</h1>
+                  <h1 className="text-white text-xl font-bold">EXLUNODE</h1>
                 </a>
               </Link>
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex gap-2 text-white">
               <button
                 type="submit"
                 className="mt-2 mr-2 m-auto hover:text-gray-500"
