@@ -4,20 +4,16 @@ import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import ProductCard, {
   SkeletonProductCard,
 } from "../../../components/ProductCard";
-import Image from "next/image";
 import AppContainer from "../../../components/AppContainer";
 import { gql, useMutation } from "@apollo/client";
 import Loader from "../../../components/BoxLoader";
 import { CORE_PAGE_INFO_FIELD } from "../../../fragments/fragments";
-import { formatCurrency, wildCardFormatter } from "../../../helpers/formatter";
+import { wildCardFormatter } from "../../../helpers/formatter";
 import SearchBox from "../../../components/SearchBox";
 import { useUserStore } from "../../../store/user";
-import ImageContainer from "../../../components/ImageContainer";
 import PictureUpload from "../../../components/PictureUpload";
 import { Picture, Product } from "../../../types/type";
 import { toast } from "react-toastify";
-import { rearg } from "lodash";
-import Link from "next/link";
 import { useRouter } from "next/dist/client/router";
 import Paper from "../../../components/Paper";
 import Form from "../../../components/Form";
@@ -30,17 +26,15 @@ interface InputMap {
 
 const CREATE_PRODUCT = gql`
   mutation CreateProduct(
-    $is_stackable: Boolean!
+    $is_stackable: Boolean
     $name: String!
     $price: Float!
     $description: String
-    $commands: [String]
   ) {
     createProduct(
       input: {
         is_stackable: $is_stackable
         name: $name
-        commands: $commands
         price: $price
         description: $description
       }
