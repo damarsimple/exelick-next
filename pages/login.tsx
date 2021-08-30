@@ -36,16 +36,7 @@ export default function Login() {
 
   const [handleLogin, { data, loading, error }] = useMutation<{
     login: LoginOutput;
-  }>(LOGIN, {
-    onCompleted: async (e) => {
-      if (e.login.token) {
-        setToken(e.login.token);
-        setUser(e.login.user);
-
-        router.push("/dashboard");
-      }
-    },
-  });
+  }>(LOGIN, {});
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -58,6 +49,13 @@ export default function Login() {
         email: username,
         password: password,
       },
+    }).then(({ data: e }) => {
+      if (e?.login.token) {
+        setToken(e.login.token);
+        setUser(e.login.user);
+
+        router.push("/dashboard");
+      }
     });
   };
 
