@@ -124,7 +124,7 @@ export default function Loader<T extends Id>({
       });
   };
 
-  if (loading) return <>{<SkeletonGrid gridLength={1} />}</>;
+  if (loading || mutationLoading) return <>{<SkeletonGrid gridLength={1} />}</>;
 
   if (error) return <p>Error :( {error.message}</p>;
 
