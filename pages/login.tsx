@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Image from "next/image";
 import { useRouter } from "next/dist/client/router";
 import AppContainer from "../components/AppContainer";
 import { AiFillGoogleCircle } from "react-icons/ai";
@@ -7,9 +6,7 @@ import { gql, useMutation } from "@apollo/client";
 import { User } from "../types/type";
 import { useAuthStore } from "../store/auth";
 import { CORE_USER_INFO_MINIMAL_FIELD } from "../fragments/fragments";
-import { client } from "./_app";
 import { useUserStore } from "../store/user";
-import { getMyCredentials } from "../helpers/auth";
 import ImageContainer from "../components/ImageContainer";
 
 const LOGIN = gql`

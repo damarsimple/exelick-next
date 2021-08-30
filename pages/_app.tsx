@@ -6,14 +6,11 @@ import {
   ApolloClient,
   InMemoryCache,
   ApolloProvider,
-  createHttpLink,
   ApolloLink,
 } from "@apollo/client";
 import { relayStylePagination } from "@apollo/client/utilities";
 import { useAuthStore } from "../store/auth";
 import { setContext } from "@apollo/client/link/context";
-import { useEffect, useState } from "react";
-import { getMyCredentials } from "../helpers/auth";
 import { ToastContainer } from "react-toastify";
 import { createUploadLink } from "apollo-upload-client";
 
