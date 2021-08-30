@@ -45,8 +45,6 @@ export default function Login() {
         setToken(e.login.token);
         setUser(e.login.user);
 
-        getMyCredentials();
-
         router.push("/dashboard");
       }
     },

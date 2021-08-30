@@ -164,16 +164,18 @@ export default function Index() {
     <AppContainer title="My Page" fullScreen>
       <DashboardContainer>
         <div className="flex flex-col gap-2">
-          <PictureUpload
-            name="Upload Gambar Profile"
-            onUploadFinish={(e) =>
-              setPictures({ ...pictures, profilepicture: e })
-            }
-          />
-          <PictureUpload
-            name="Upload Gambar Banner"
-            onUploadFinish={(e) => setPictures({ ...pictures, banner: e })}
-          />
+          <div className="grid grid-cols-2 gap-3">
+            <PictureUpload
+              name="Upload Gambar Profile"
+              onUploadFinish={(e) =>
+                setPictures({ ...pictures, profilepicture: e })
+              }
+            />
+            <PictureUpload
+              name="Upload Gambar Banner"
+              onUploadFinish={(e) => setPictures({ ...pictures, banner: e })}
+            />
+          </div>
           {userInputMap.map((e, i) =>
             loading ? (
               <div key={i} className="pb-6 md:pb-0 flex flex-col">

@@ -63,7 +63,16 @@ export default function Loader<T extends Id>({
       loading: mutationLoading,
       error: mutationError,
     },
-  ] = useMutation(deleteQuery ?? gql``);
+  ] = useMutation(
+    deleteQuery ??
+      gql`
+        mutation {
+          placeholder {
+            id
+          }
+        }
+      `
+  );
 
   const PerPage = perPage ?? PER_PAGE_DEFAULT;
 

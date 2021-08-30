@@ -18,6 +18,9 @@ import { Picture, Product } from "../../../types/type";
 import { toast } from "react-toastify";
 import { rearg } from "lodash";
 import Link from "next/link";
+import { useRouter } from "next/dist/client/router";
+import Paper from "../../../components/Paper";
+import Form from "../../../components/Form";
 
 interface InputMap {
   label: string;
@@ -65,82 +68,17 @@ const UPDATE_PRODUCT_PICTURE = gql`
   }
 `;
 export default function Index() {
-  const [inputMap, setInputMap] = useState<{ [e: string]: any }>({});
-
   const [searchValue, setSearchValue] = useState("");
 
   const [cover, setCover] = useState<null | Picture>(null);
 
   const { user } = useUserStore();
 
-  const [
-    mutateFunction,
-    { data: mutationData, loading: mutationLoading, error: mutationError },
-  ] = useMutation<{ createProduct: Product }>(CREATE_PRODUCT, {
-    onCompleted: () => {
-      toast.success("Berhasil mengubah data mu <3");
-    },
-  });
+  const [mutatePictureFunction] = useMutation<{
+    update_product_picture: Product;
+  }>(UPDATE_PRODUCT_PICTURE);
 
-  const [
-    mutatePictureFunction,
-    {
-      data: mutationDataPicture,
-      loading: mutationLoadingPicture,
-      error: mutationErrorPicture,
-    },
-  ] = useMutation<{ update_product_picture: Product }>(UPDATE_PRODUCT_PICTURE, {
-    onCompleted: () => {
-      toast.success("Berhasil mengubah gambar mu <3");
-    },
-  });
-
-  const [multiInputHolder, setMultiInputHolder] = useState("");
-
-  const userInputMap: InputMap[] = [
-    {
-      label: "Nama Produk",
-      name: "name",
-    },
-    {
-      label: "Harga",
-      name: "price",
-      type: "number",
-    },
-    {
-      label: "Description",
-      name: "description",
-    },
-    {
-      label: "Bisa di stak (dikumpul / stackable)",
-      name: "is_stackable",
-      type: "checkbox",
-    },
-    {
-      label: "Command",
-      name: "commands",
-      type: "multiInput",
-    },
-  ];
-
-  const handleSubmit = () => {
-    const cp = inputMap;
-
-    for (const x in cp) {
-      if (cp[x] == "") {
-        delete cp[x];
-      }
-    }
-    mutateFunction({ variables: { ...inputMap } }).then((e) => {
-      if (cover) {
-        mutatePictureFunction({
-          variables: { id: e?.data?.createProduct.id, cover: { id: cover.id } },
-        }).then((e) => {
-          toast.success("Berhasil mengubah gambar mu !");
-        });
-      }
-    });
-  };
+  const router = useRouter();
 
   return (
     <AppContainer title="Product" fullScreen>
@@ -310,112 +248,57 @@ export default function Index() {
             </TabPanel> */}
 
             <TabPanel>
-              <div className="flex flex-col gap-2">
+              <div className="grid grid-cols-2 gap-3">
                 <PictureUpload
+                  auto
                   name="Upload Gambar Produk"
                   onUploadFinish={(e) => setCover(e)}
                 />
-
-                {userInputMap.map((e, i) => (
-                  <div key={i} className="pb-6 md:pb-0 flex flex-col">
-                    <label className="input-label text-lg mb-2 font-semibold italic">
-                      {e.label}
-                    </label>
-                    <div>
-                      {e.type == "multiInput" ? (
-                        <div>
-                          <div className="flex gap-2">
-                            <input
-                              type="text"
-                              className="input-field inline-flex items-baseline border-none shadow-md bg-white placeholder-blue w-full p-4 no-outline text-dusty-blue-darker"
-                              name={e.name}
-                              onChange={(x) => {
-                                setMultiInputHolder(x.target.value);
-                              }}
-                            />
-                            <button
-                              onClick={() => {
-                                if (!multiInputHolder) return;
-                                const iMap: {
-                                  [e: string]: string | string[];
-                                } = {
-                                  ...inputMap,
-                                };
-
-                                iMap[e.name] = [
-                                  ...(iMap[e.name] ?? []),
-                                  multiInputHolder,
-                                ];
-
-                                setInputMap(iMap);
-                                setMultiInputHolder("");
-                              }}
-                            >
-                              INPUT
-                            </button>
-                          </div>
-                          <div className="flex flex-col gap-2">
-                            {Array.isArray(inputMap[e.name]) &&
-                              (inputMap[e.name] as string[]).map((x) => (
-                                <div
-                                  key={x}
-                                  className="shadow rounded p-2 flex justify-between"
-                                >
-                                  <p>{x}</p>
-                                  <button
-                                    onClick={() => {
-                                      const cp = inputMap;
-                                      cp[e.name] = (
-                                        cp[e.name] as string[]
-                                      ).filter((e) => e != x);
-
-                                      setInputMap(cp);
-                                    }}
-                                  >
-                                    X
-                                  </button>
-                                </div>
-                              ))}
-                          </div>
-                        </div>
-                      ) : (
-                        <input
-                          type={e.type ?? "text"}
-                          className="input-field inline-flex items-baseline border-none shadow-md bg-white placeholder-blue w-full p-4 no-outline text-dusty-blue-darker"
-                          name={e.name}
-                          onChange={(x) => {
-                            const iMap: {
-                              [e: string]: string | boolean | number;
-                            } = {
-                              ...inputMap,
-                            };
-
-                            switch (e.type) {
-                              case "checkbox":
-                                iMap[e.name] = x.target.value == "on";
-                                break;
-                              case "number":
-                                iMap[e.name] = parseInt(x.target.value);
-                                break;
-                              default:
-                                iMap[e.name] = x.target.value;
-                                break;
-                            }
-
-                            setInputMap(iMap);
-                          }}
-                        />
-                      )}
-                    </div>
-                  </div>
-                ))}
-                <button
-                  disabled={mutationLoading}
-                  onClick={handleSubmit}
-                  className="text-lg text-white capitalize font-semibold rounded bg-red-600 hover:bg-red-900 p-4"
-                >
-                  Simpan
-                </button>
+                <Paper name="Attribut">
+                  <Form<Product, { createProduct: Product }>
+                    fields="createProduct"
+                    attributes={[
+                      {
+                        label: "Nama",
+                        name: "name",
+                        required: true,
+                      },
+                      {
+                        label: "Harga",
+                        name: "price",
+                        required: true,
+                        type: "number",
+                      },
+                      {
+                        label: "Deskripsi",
+                        name: "description",
+                        required: true,
+                      },
+                      {
+                        label: "Bisa di stak / dikumpul / dibeli bersamaan",
+                        name: "is_stackable",
+                        type: "checkbox",
+                      },
+                    ]}
+                    mutationQuery={CREATE_PRODUCT}
+                    beforeSubmit={() => {
+                      if (!cover) throw "Anda belum mengupload gambar !";
+                    }}
+                    afterSubmit={({ id }) => {
+                      if (cover) {
+                        mutatePictureFunction({
+                          variables: {
+                            id,
+                            cover: { id: cover?.id },
+                          },
+                        }).then((e) => {
+                          toast.success("Berhasil mengubah gambar mu !");
+                          router.push("/dashboard/products/" + id);
+                        });
+                      }
+                    }}
+                  />
+                </Paper>
               </div>
             </TabPanel>
           </Tabs>

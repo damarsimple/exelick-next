@@ -8,6 +8,7 @@ import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { useAuthStore } from "../store/auth";
 import { useRouter } from "next/dist/client/router";
+import ImageContainer from "./ImageContainer";
 
 type Except = "navbar";
 
@@ -89,34 +90,105 @@ export default function AppContainer({
           name="viewport"
           content="width=device-width, initial-scale=1.0"
         ></meta>
+
+        <link
+          rel="apple-touch-icon"
+          sizes="57x57"
+          href="/apple-icon-57x57.png"
+        />
+        <link
+          rel="apple-touch-icon"
+          sizes="60x60"
+          href="/apple-icon-60x60.png"
+        />
+        <link
+          rel="apple-touch-icon"
+          sizes="72x72"
+          href="/apple-icon-72x72.png"
+        />
+        <link
+          rel="apple-touch-icon"
+          sizes="76x76"
+          href="/apple-icon-76x76.png"
+        />
+        <link
+          rel="apple-touch-icon"
+          sizes="114x114"
+          href="/apple-icon-114x114.png"
+        />
+        <link
+          rel="apple-touch-icon"
+          sizes="120x120"
+          href="/apple-icon-120x120.png"
+        />
+        <link
+          rel="apple-touch-icon"
+          sizes="144x144"
+          href="/apple-icon-144x144.png"
+        />
+        <link
+          rel="apple-touch-icon"
+          sizes="152x152"
+          href="/apple-icon-152x152.png"
+        />
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/apple-icon-180x180.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="192x192"
+          href="/android-icon-192x192.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/favicon-32x32.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="96x96"
+          href="/favicon-96x96.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="/favicon-16x16.png"
+        />
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="msapplication-TileColor" content="#ffffff" />
+        <meta name="msapplication-TileImage" content="/ms-icon-144x144.png" />
+        <meta name="theme-color" content="#ffffff" />
       </Head>
 
       <div className={fullScreen ? "h-screen" : ""}>
         {!without?.includes("navbar") && (
-          <nav className="fixed top-0 w-full shadow rounded p-1 md:p-3 flex justify-between z-50 bg-white">
-            <Link href="/">
-              <a>
-                <button className="p-2 bg-gray-50 hover:bg-gray-200 text-sm text-gray-900 font-semibold rounded">
-                  Exlunode
-                </button>
-              </a>
-            </Link>
+          <nav className="bg-primary-accent fixed top-0 w-full shadow  p-1 md:p-3 flex justify-between z-50">
+            <div>
+              <Link href="/">
+                <a className="flex gap-1">
+                  <ImageContainer
+                    width={30}
+                    height={30}
+                    src="/android-icon-96x96.png"
+                  />
+                  <h1 className="text-xl font-bold">EXLUNODE</h1>
+                </a>
+              </Link>
+            </div>
 
-            <div className="relative mx-auto text-gray-600">
-              <input
-                className="border-2 border-gray-300 bg-white h-10 px-5 pr-16 rounded-lg text-sm focus:outline-none"
-                type="search"
-                name="search"
-                placeholder="Search"
-              />
+            <div className="flex gap-2">
               <button
                 type="submit"
-                className="absolute right-0 top-0 mt-2 mr-2 m-auto hover:text-gray-500"
+                className="mt-2 mr-2 m-auto hover:text-gray-500"
               >
                 <MdSearch size="1.5em" />
               </button>
-            </div>
-            <div className="flex gap-2">
               <Link href="/dashboard">
                 <a>
                   <button className="p-2 bg-gray-50 hover:bg-gray-200 text-sm text-gray-900 font-semibold rounded">

@@ -3,8 +3,7 @@ import AppContainer from "../components/AppContainer";
 import Loader from "../components/BoxLoader";
 import UserCard, { UserCardSkeleton } from "../components/UserCard";
 import { CORE_PAGE_INFO_FIELD } from "../fragments/fragments";
-import { User } from "../types/type";
-
+import ImageContainer from "../components/ImageContainer";
 const USERS = gql`
   ${CORE_PAGE_INFO_FIELD}
   query GetUsersQuery($first: Int!, $after: String) {
@@ -32,23 +31,37 @@ const USERS = gql`
 export default function Home() {
   return (
     <AppContainer>
-      <div className="flex h-screen">
-        <div className="m-auto text-center container mx-auto px-4">
-          <h1 className="font-semibold text-1xl mt-10">Exelick Gayming UwU</h1>
-          <p className="text-lg">
-            Platform yang memudahkan fans berinteraksi dengan kreator
-          </p>
-          <h2 className="font-semibold text-xl">
-            Kreator yang sudah bergabung
-          </h2>
-          <Loader
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 mt-4 gap-2 p-2"
-            query={USERS}
-            Component={UserCard}
-            SkeletonComponent={UserCardSkeleton}
-            fields="users"
-            perPage={12}
-          />
+      <div className="text-center">
+        <div className="px-4">
+          <div className="flex p-20">
+            <section className="m-auto">
+              <ImageContainer
+                alt="App Logo"
+                width={1080 / 3}
+                height={1080 / 3}
+                src="/ms-icon-310x310.png"
+              />
+              <h1 className="font-semibold text-4xl mt-10 text-primary-base">
+                Apa Itu Exelick Gayming UwU?
+              </h1>
+              <p className="text-lg text-primary-shadow">
+                Platform yang memudahkan fans berinteraksi dengan kreator
+              </p>
+            </section>
+          </div>
+          <section className="container mx-auto">
+            <h2 className="font-semibold text-xl text-primary-accent">
+              Kreator yang sudah bergabung
+            </h2>
+            <Loader
+              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 mt-4 gap-2 p-2"
+              query={USERS}
+              Component={UserCard}
+              SkeletonComponent={UserCardSkeleton}
+              fields="users"
+              perPage={12}
+            />
+          </section>
         </div>
       </div>
     </AppContainer>

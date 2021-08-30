@@ -29,7 +29,7 @@ function Username({ user }: { user: User }) {
     <AppContainer title={user.username} fullScreen>
       <div className="grid grid-cols-12 h-full  gap-3">
         <div className="col-span-12 md:col-span-6 lg:col-span-2 bg-gray-100 flex flex-col p-10  gap-6">
-          <div className="flex flex-col text-center">
+          <div className="flex flex-col text-center bg-white rounded p-4">
             <ImageContainer
               className="rounded-full h-24 w-24 "
               src={user.profilepicture?.real_path}
