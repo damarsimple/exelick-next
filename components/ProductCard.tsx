@@ -39,7 +39,7 @@ export default function ProductCard(e: Product) {
     <div className="bg-white shadow-lg rounded-lg overflow-hidden">
       <div className="px-4 py-2">
         <h1 className="text-gray-900 font-bold text-lg uppercase truncate">
-          {e.id} {e.name}
+          {e.name}
         </h1>
         <p className="text-gray-600 text-sm mt-1 truncate">{e.description}</p>
       </div>
