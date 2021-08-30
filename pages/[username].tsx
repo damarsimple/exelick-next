@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
 import { NextPageContext } from "next";
 import withRouter from "next/dist/client/with-router";
 import Image from "next/image";
@@ -20,10 +20,38 @@ import { useCartsStore } from "../store/carts";
 import { User } from "../types/type";
 import { client } from "./_app";
 
-function Username({ user }: { user: User }) {
+const GET_USER = gql`
+  ${CORE_USER_INFO_MINIMAL_FIELD}
+  query UserByUsername($username: String!) {
+    userByUsername(username: $username) {
+      ...CoreUserInfoMinimalField
+      profilepicture {
+        real_path
+      }
+      banner {
+        real_path
+      }
+    }
+  }
+`;
+function Username({
+  user: userSsr,
+  username,
+}: {
+  user: User;
+  username: string;
+}) {
   const [searchValue, setSearchValue] = useState("");
 
   const { carts, setCarts, removeCarts } = useCartsStore();
+
+  const { data, loading, error } = useQuery(GET_USER, {
+    variables: {
+      username,
+    },
+  });
+
+  const user = (!loading && !error && data?.user) ?? userSsr;
 
   return (
     <AppContainer title={user.username} fullScreen>
@@ -163,25 +191,13 @@ export async function getServerSideProps(context: NextPageContext) {
   const { username } = context.query;
   const { data } = await client.query({
     variables: { username },
-    query: gql`
-      ${CORE_USER_INFO_MINIMAL_FIELD}
-      query UserByUsername($username: String!) {
-        userByUsername(username: $username) {
-          ...CoreUserInfoMinimalField
-          profilepicture {
-            real_path
-          }
-          banner {
-            real_path
-          }
-        }
-      }
-    `,
+    query: GET_USER,
   });
 
   return {
     props: {
       user: data.userByUsername,
+      username,
     },
   };
 }
