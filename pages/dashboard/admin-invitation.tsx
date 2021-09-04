@@ -20,8 +20,8 @@ export default function AdminInvitation() {
             { send_invitation: ModifiedInvitationOutput }
           >
             mutationQuery={gql`
-              mutation {
-                send_invitation(email: "damaralbaribin2@gmail.com") {
+              mutation SendInvitation($email: String!) {
+                send_invitation(email: $email) {
                   status
                   message
                 }
