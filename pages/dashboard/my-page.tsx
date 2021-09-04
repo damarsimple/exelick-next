@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import AppContainer from "../../components/AppContainer";
 import DashboardContainer from "../../components/DashboardContainer";
+import ImageContainer from "../../components/ImageContainer";
+import Paper from "../../components/Paper";
 import PictureUpload from "../../components/PictureUpload";
 import { CORE_USER_INFO_MINIMAL_FIELD } from "../../fragments/fragments";
 import { useUserStore } from "../../store/user";
@@ -16,6 +18,12 @@ const GET_DATA = gql`
       username
       description
       tag
+      profilepicture {
+        real_path
+      }
+      banner {
+        real_path
+      }
     }
   }
 `;
@@ -105,12 +113,7 @@ export default function Index() {
   const [
     mutateFunction,
     { data: mutationData, loading: mutationLoading, error: mutationError },
-  ] = useMutation<{ updateUser: User }>(UPDATE_MUTATION, {
-    onCompleted: () => {
-      refetch();
-      toast.success("Berhasil mengubah data mu <3");
-    },
-  });
+  ] = useMutation<{ updateUser: User }>(UPDATE_MUTATION);
 
   const [
     mutatePictureFunction,
@@ -136,45 +139,98 @@ export default function Index() {
         delete cp[x];
       }
     }
-    mutateFunction({ variables: { ...user, ...cp } }).then((e) => {
+    mutateFunction({
+      variables: { id: user?.id, input: { ...user, ...cp } },
+    }).then((e) => {
       setUser(e.data?.updateUser);
     });
-
-    if (pictures.banner || pictures.profilepicture) {
-      const pictureData: { [e: string]: object } = {};
-
-      if (pictures.banner) {
-        pictureData["banner"] = { id: pictures.banner.id };
-      }
-      if (pictures.profilepicture) {
-        pictureData["profilepicture"] = { id: pictures.profilepicture.id };
-      }
-
-      console.log(pictureData);
-
-      mutatePictureFunction({
-        variables: { id: user?.id, ...pictureData },
-      }).then((e) => {
-        toast.success("Berhasil mengubah gambar mu !");
-      });
-    }
   };
+
+  const [showMap, setShowMap] = useState({
+    banner: true,
+    profilepicture: true,
+  });
 
   return (
     <AppContainer title="My Page" fullScreen>
       <DashboardContainer>
         <div className="flex flex-col gap-2">
           <div className="grid grid-cols-2 gap-3">
-            <PictureUpload
-              name="Upload Gambar Profile"
-              onUploadFinish={(e) =>
-                setPictures({ ...pictures, profilepicture: e })
-              }
-            />
-            <PictureUpload
-              name="Upload Gambar Banner"
-              onUploadFinish={(e) => setPictures({ ...pictures, banner: e })}
-            />
+            <Paper
+              name="Profile Picture"
+              className="flex flex-col justify-between"
+            >
+              {showMap.profilepicture ? (
+                <>
+                  <ImageContainer
+                    src={user?.banner?.real_path}
+                    height={400}
+                    width={400}
+                    fallback="profile"
+                  />
+                </>
+              ) : (
+                <PictureUpload
+                  auto
+                  name="Upload Gambar Profile"
+                  onUploadFinish={(e) => {
+                    setPictures({ ...pictures, profilepicture: e });
+                    mutatePictureFunction({
+                      variables: { id: user?.id, profilepicture: { id: e.id } },
+                    }).then((e) => {
+                      toast.success("Berhasil mengubah profile picture mu !");
+                    });
+                  }}
+                />
+              )}
+              <button
+                onClick={() =>
+                  setShowMap({
+                    ...showMap,
+                    profilepicture: !showMap.profilepicture,
+                  })
+                }
+                className="w-full text-lg text-white capitalize font-semibold rounded bg-blue-600 hover:bg-blue-900 p-4"
+              >
+                {showMap?.profilepicture ? "UBAH" : "BATAL"} PROFILEPICTURE
+              </button>
+            </Paper>
+            <Paper name="Banner" className="flex flex-col justify-between">
+              {showMap.banner ? (
+                <>
+                  <ImageContainer
+                    src={user?.banner?.real_path}
+                    height={600}
+                    width={1200}
+                    fallback="banner"
+                  />
+                </>
+              ) : (
+                <PictureUpload
+                  auto
+                  name="Upload Gambar Banner"
+                  onUploadFinish={(e) => {
+                    setPictures({ ...pictures, banner: e });
+                    mutatePictureFunction({
+                      variables: { id: user?.id, banner: { id: e.id } },
+                    }).then((e) => {
+                      toast.success("Berhasil mengubah banner mu !");
+                    });
+                  }}
+                />
+              )}
+              <button
+                onClick={() =>
+                  setShowMap({
+                    ...showMap,
+                    banner: !showMap.banner,
+                  })
+                }
+                className="w-full text-lg text-white capitalize font-semibold rounded bg-blue-600 hover:bg-blue-900 p-4"
+              >
+                {showMap?.banner ? "UBAH" : "BATAL"} BANNER
+              </button>
+            </Paper>
           </div>
           {userInputMap.map((e, i) =>
             loading ? (

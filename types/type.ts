@@ -30,9 +30,11 @@ export interface User {
   variables: UserVariable[];
   banned_words: string[];
   productCount: number;
+  profilepicture: Maybe<Picture>;
+  banner: Maybe<Picture>;
+  is_admin: boolean;
+  is_active: boolean;
   products: Maybe<ProductConnection>;
-  profilepicture?: Maybe<Picture>;
-  banner?: Maybe<Picture>;
 }
 
 export interface UserSocial {
@@ -41,9 +43,9 @@ export interface UserSocial {
 }
 
 export enum SocialType {
-  Facebook = "FACEBOOK",
-  Twitter = "TWITTER",
-  Youtube = "YOUTUBE",
+  Facebook = 'FACEBOOK',
+  Twitter = 'TWITTER',
+  Youtube = 'YOUTUBE',
 }
 
 export interface OverlaySetting {
@@ -63,30 +65,30 @@ export interface OverlaySetting {
 }
 
 export enum RunningTextType {
-  Latest = "LATEST",
-  Top = "TOP",
+  Latest = 'LATEST',
+  Top = 'TOP',
 }
 export enum OverlayTheme {
-  Default = "DEFAULT",
-  Simple = "SIMPLE",
-  Fun = "FUN",
-  Badut = "BADUT",
+  Default = 'DEFAULT',
+  Simple = 'SIMPLE',
+  Fun = 'FUN',
+  Badut = 'BADUT',
 }
 export enum SeparatorType {
-  Dot = "DOT",
-  Icon = "ICON",
+  Dot = 'DOT',
+  Icon = 'ICON',
 }
 export enum Speed {
-  Slow = "SLOW",
-  Normal = "NORMAL",
-  Fast = "FAST",
+  Slow = 'SLOW',
+  Normal = 'NORMAL',
+  Fast = 'FAST',
 }
 export enum OverlayType {
-  Notification = "NOTIFICATION",
-  Leaderboard = "LEADERBOARD",
-  Goal = "GOAL",
-  Running_text = "RUNNING_TEXT",
-  Qr_code = "QR_CODE",
+  Notification = 'NOTIFICATION',
+  Leaderboard = 'LEADERBOARD',
+  Goal = 'GOAL',
+  Running_text = 'RUNNING_TEXT',
+  Qr_code = 'QR_CODE',
 }
 export interface ServerMetadata {
   hostname: string;
@@ -99,6 +101,24 @@ export interface UserVariable {
   value: string;
 }
 
+export interface Picture {
+  id: string;
+  name: string;
+  created_at: string;
+  updated_at: string;
+  cid: Maybe<string>;
+  original_size: number;
+  compressed_size: number;
+  real_path: string;
+  path: string;
+  roles: Maybe<PictureRole>;
+}
+
+export enum PictureRole {
+  Profile_picture = 'PROFILE_PICTURE',
+  Banner = 'BANNER',
+  Cover = 'COVER',
+}
 /** A paginated list of Product edges. */
 export interface ProductConnection {
   /** Pagination information about the list of edges.*/
@@ -147,8 +167,7 @@ export interface Product {
   price: Maybe<number>;
   user_id: string;
   description: Maybe<string>;
-
-  cover?: Maybe<Picture>;
+  cover: Maybe<Picture>;
 }
 
 export interface PurchaseProductPivot {
@@ -188,14 +207,16 @@ export interface updateUser {
   name?: string;
   username?: string;
   password?: string;
-  email?: string;
   tag?: string;
   description?: string;
 }
 
+export interface PictureAssignInput {
+  id: string;
+}
+
 export interface createProduct {
-  is_stackable: boolean;
-  user_id: string;
+  is_stackable?: boolean;
   name: string;
   commands?: string[];
   price: number;
@@ -229,6 +250,7 @@ export interface PurchaseData {
   success: boolean;
   purchase: Maybe<Purchase>;
   transaction: Maybe<Transaction>;
+  payment: Maybe<MidtransRequestOutput>;
 }
 
 export interface Purchase {
@@ -259,6 +281,12 @@ export interface Transaction {
   user: User;
 }
 
+export interface MidtransRequestOutput {
+  token: string;
+  redirect_url: string;
+  uuid: string;
+}
+
 export interface login {
   email: string;
   password: string;
@@ -270,20 +298,13 @@ export interface LoginOutput {
   message: Maybe<string>;
 }
 
-export interface Picture {
-  id: string;
-  name: string;
-  created_at: string;
-  updated_at: string;
-  cid: Maybe<string>;
-  original_size: number;
-  compressed_size: number;
-  real_path: string;
-  path: string;
+export interface InvitationOutput {
+  status: boolean;
+  message: Maybe<string>;
 }
 
 export enum PaymentMethodEnum {
-  Qris = "QRIS",
+  Qris = 'QRIS',
 }
 export interface Game {
   id: string;
@@ -316,8 +337,8 @@ export interface OyRequestTransactionResponse {
 
 /** The available directions for ordering a list of records. */
 export enum SortOrder {
-  Asc = "ASC",
-  Desc = "DESC",
+  Asc = 'ASC',
+  Desc = 'DESC',
 }
 /** Allows ordering a list of records. */
 export interface OrderByClause {
@@ -363,9 +384,9 @@ export interface SimplePaginatorInfo {
 
 /** Specify if you want to include or exclude trashed results from a query. */
 export enum Trashed {
-  Only = "ONLY",
-  With = "WITH",
-  Without = "WITHOUT",
+  Only = 'ONLY',
+  With = 'WITH',
+  Without = 'WITHOUT',
 }
 export interface meArgs {}
 
@@ -383,6 +404,10 @@ export interface productArgs {
 
 export interface getTaxArgs {
   price: number;
+}
+
+export interface query_invitationArgs {
+  username: string;
 }
 
 export interface usersArgs {
@@ -414,6 +439,12 @@ export interface deleteUserArgs {
   id: string;
 }
 
+export interface update_user_pictureArgs {
+  id: string;
+  profilepicture?: PictureAssignInput;
+  banner?: PictureAssignInput;
+}
+
 export interface createProductArgs {
   input: createProduct;
 }
@@ -427,6 +458,11 @@ export interface deleteProductArgs {
   id: string;
 }
 
+export interface update_product_pictureArgs {
+  id: string;
+  cover?: PictureAssignInput;
+}
+
 export interface createPurchaseArgs {
   input: createPurchase;
 }
@@ -437,4 +473,17 @@ export interface loginArgs {
 
 export interface upload_pictureArgs {
   file: File;
+}
+
+export interface send_invitationArgs {
+  email: string;
+}
+
+export interface activate_invitationArgs {
+  username: string;
+  input: updateUser;
+}
+
+export interface userUpdatedArgs {
+  id: string;
 }

@@ -51,7 +51,8 @@ function Username({
     },
   });
 
-  const user = (!loading && !error && data?.user) ?? userSsr;
+  const user =
+    (!loading && !error && data?.user?.username && data?.user) ?? userSsr;
 
   return (
     <AppContainer title={user.username} fullScreen>

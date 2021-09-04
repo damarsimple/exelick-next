@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Paper(props: {
   name: string;
-  children: JSX.Element;
+  children: JSX.Element | JSX.Element[];
   className?: string;
 }) {
   return (

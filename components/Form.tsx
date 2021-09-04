@@ -1,6 +1,6 @@
 import { DocumentNode, useMutation } from "@apollo/client";
 import { get } from "lodash";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Product } from "../types/type";
 import Input from "./Input";
@@ -32,13 +32,9 @@ export default function Form<T, N>({
   const [
     mutateFunction,
     { data: mutationData, loading: mutationLoading, error: mutationError },
-  ] = useMutation<N>(mutationQuery, {
-    onCompleted: () => {
-      toast.success("Berhasil mengubah data mu <3");
-    },
-  });
+  ] = useMutation<N>(mutationQuery, {});
 
-  const [inputMap, setInputMap] = useState<T | object>({});
+  const [inputMap, setInputMap] = useState<T | object>(defaultValueMap ?? {});
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -52,6 +48,7 @@ export default function Form<T, N>({
     }
 
     const requireds = attributes.filter((e) => e.required).map((e) => e.name);
+
     for (const x of requireds) {
       //@ts-ignore
       if (!inputMap[x]) {

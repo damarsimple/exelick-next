@@ -1,14 +1,16 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { MdChevronLeft, MdSearch, MdShoppingCart } from "react-icons/md";
-import { AiOutlineUser } from "react-icons/ai";
+import { AiFillWallet, AiOutlineUser } from "react-icons/ai";
 import { useUserStore } from "../store/user";
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { useAuthStore } from "../store/auth";
 import { useRouter } from "next/dist/client/router";
 import ImageContainer from "./ImageContainer";
+import { formatCurrency } from "../helpers/formatter";
+import { useCartsStore } from "../store/carts";
 
 type Except = "navbar";
 
@@ -19,7 +21,7 @@ export function UserButton() {
   const { push } = useRouter();
 
   return (
-    <Menu as="button" className="relative inline-block text-left">
+    <Menu as={Fragment}>
       <div>
         <Menu.Button className="flex p-2 bg-gray-50 hover:bg-gray-200 text-sm text-gray-900 font-semibold rounded">
           {user?.username}
@@ -81,6 +83,11 @@ export default function AppContainer({
   without?: Except[];
 }) {
   const { user } = useUserStore();
+  const { carts } = useCartsStore();
+
+  useEffect(() => {
+    if (!user) return;
+  }, [user]);
 
   return (
     <div>
@@ -196,10 +203,18 @@ export default function AppContainer({
                   </button>
                 </a>
               </Link>
+              <Link href="/dashboard">
+                <a>
+                  <button className=" gap-2 flex p-2 bg-gray-50 hover:bg-gray-200 text-sm text-gray-900 font-semibold rounded">
+                    <AiFillWallet size="1.5em" />{" "}
+                    {formatCurrency(user?.balance)}
+                  </button>
+                </a>
+              </Link>
               <Link href="/checkout">
                 <a>
-                  <button className="p-2 bg-gray-50 hover:bg-gray-200 text-sm text-gray-900 font-semibold rounded">
-                    <MdShoppingCart size="1.5em" />
+                  <button className="flex p-2 bg-gray-50 hover:bg-gray-200 text-sm text-gray-900 font-semibold rounded">
+                    <MdShoppingCart size="1.5em" /> {carts?.length}
                   </button>
                 </a>
               </Link>

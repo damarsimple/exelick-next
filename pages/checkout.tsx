@@ -6,7 +6,7 @@ import { useCartsStore } from "../store/carts";
 import Image from "next/image";
 import { formatCurrency } from "../helpers/formatter";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { Purchase, Transaction } from "../types/type";
+import { MidtransRequestOutput, Purchase, Transaction } from "../types/type";
 import { toast } from "react-toastify";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import ImageContainer from "../components/ImageContainer";
@@ -20,7 +20,7 @@ export default function Checkout() {
         transaction: Transaction;
         success: boolean;
         message: string;
-        // payment: TripayTransactionResponse;
+        payment: MidtransRequestOutput;
       };
     }>(
       gql`
@@ -53,13 +53,9 @@ export default function Checkout() {
               status
             }
             payment {
-              qr_url
-              qr_string
-              checkout_url
-              instructions {
-                title
-                steps
-              }
+              redirect_url
+              token
+              uuid
             }
             success
             message
@@ -92,7 +88,7 @@ export default function Checkout() {
 
   const [onPayment, setOnPayment] = useState(false);
 
-  const [payment, setPayment] = useState<null>(null);
+  const [payment, setPayment] = useState<null | MidtransRequestOutput>(null);
 
   const [transaction, setTransaction] = useState<null | Transaction>(null);
 
@@ -140,17 +136,21 @@ export default function Checkout() {
         transaction,
         success,
         message,
-        // payment: rPayment,
+        payment: rPayment,
       } = e.data?.createPurchase;
       if (!success) {
         toast.error(message);
       }
 
       setOnPayment(true);
-      // setPayment(rPayment);
+      setPayment(rPayment);
       setTransaction(transaction);
       setPurchase(purchase);
       setTabIndex(1);
+
+      if (window && rPayment) {
+        window.open(rPayment.redirect_url, "_blank")?.focus();
+      }
     });
   };
 
@@ -216,7 +216,7 @@ export default function Checkout() {
                                 <MdDelete size="1.5em" />
                               </button>
                               <p className="mb-2 text-lg font-semibold truncate">
-                                {product.name}
+                                {product.name}{" "}
                               </p>
                             </div>
                           </td>{" "}
@@ -267,15 +267,7 @@ export default function Checkout() {
                         </tr>
                       ))}
                       <tr className="border-t-2 mt-4">
-                        <td className="hidden pb-4 md:table-cell">
-                          <a href="#">
-                            {/* <img
-                          src="https://limg.app/i/Calm-Cormorant-Catholic-Pinball-Blaster-yM4oub.jpeg"
-                          className="w-20 rounded"
-                          alt="Thumbnail"
-                        /> */}
-                          </a>
-                        </td>
+                        <td className="hidden pb-4 md:table-cell"></td>
                         <td>
                           <p className="mb-2 md:ml-4">Total</p>
                         </td>
@@ -294,38 +286,17 @@ export default function Checkout() {
                 {isPayed && (
                   <TabPanel>
                     <div className="flex flex-col gap-2">
-                      <div className="flex justify-center">
-                        {/* <ImageContainer
-                          src={payment?.qr_url ?? ""}
-                          width={320}
-                          height={320}
-                          alt="QR Code"
-                        /> */}
-                      </div>
+                      <div>Menunggu Konfirmasi ....</div>
                       <div>
-                        y
-                        {/* {payment?.instructions?.map((e) => (
-                          <div key={e.title}>
-                            <h1 className="text-xl font-semibold">{e.title}</h1>
-                            {e.steps.map((e, i) => (
-                              <p key={e} className="text-lg">
-                                {i + 1}. {e}
-                              </p>
-                            ))}
-                          </div>
-                        ))} */}
-                      </div>
-
-                      <div>
-                        {/* <a
-                          href={payment?.checkout_url}
+                        <a
+                          href={payment?.redirect_url}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
                           <button className="text-lg font-semibold uppercase w-full p-4 shadow rounded bg-gray-100 hover:bg-gray-200">
-                            <h1>Link Checkout</h1>
+                            <h1>Link Pembayaran</h1>
                           </button>
-                        </a> */}
+                        </a>
                       </div>
                     </div>
                   </TabPanel>
