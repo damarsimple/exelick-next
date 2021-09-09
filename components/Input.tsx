@@ -25,7 +25,7 @@ export default function Input({
     return <input type="hidden" name={name} defaultValue={defaultValue} />;
 
   return (
-    <div className="grid grid-cols-12  gap-2 my-4">
+    <div className="flex flex-col md:grid md:grid-cols-12  gap-2 my-4">
       <label className="col-span-4 input-label text-lg mb-2 font-semibold italic">
         {label}
       </label>

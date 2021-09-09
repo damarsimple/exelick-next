@@ -1,6 +1,7 @@
 import { gql, useQuery } from "@apollo/client";
 import { NextRouter, withRouter } from "next/dist/client/router";
 import React from "react";
+import { toast } from "react-toastify";
 import Form from "../../components/Form";
 import Paper from "../../components/Paper";
 import { CORE_USER_INFO_MINIMAL_FIELD } from "../../fragments/fragments";
@@ -106,6 +107,9 @@ function Uuid({ router }: { router: NextRouter }) {
                 `}
                 afterSubmit={(e) => {
                   if (e.is_active) {
+                    toast.success(
+                      "Akun berhasil diaktifkan silahkan login :-)"
+                    );
                     router.push("/login");
                   }
                 }}

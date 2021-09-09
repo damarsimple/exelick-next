@@ -232,7 +232,7 @@ export default function AppContainer({
             </div>
           </nav>
         )}
-        <div className="h-full box-border pt-16">{children}</div>
+        <div className="h-full box-border pt-8 md:pt-16">{children}</div>
       </div>
     </div>
   );

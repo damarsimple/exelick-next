@@ -80,7 +80,7 @@ export default function DashboardContainer({ children }: DCContainer) {
 
   return (
     <div className="min-h-screen grid grid-cols-12">
-      <div className="col-span-3 flex flex-col gap-1 bg-gradient-to-b from-blue-400 to-green-500 p-2 max-h-full">
+      <div className="col-span-2 md:col-span-3 flex flex-col gap-1 bg-gradient-to-b from-blue-400 to-green-500 p-2 max-h-full">
         {menu.map((e, i) => (
           <Link key={i} href={e.url}>
             <a
@@ -89,15 +89,15 @@ export default function DashboardContainer({ children }: DCContainer) {
                 (pathname == e.url ? "bg-red-400" : "")
               }
             >
-              <button key={i} className="grid grid-cols-12 gap-2">
-                <span className="col-span-2"> {e.icon}</span>
-                <span className="col-span-10 hidden md:block">{e.name}</span>
+              <button key={i} className="flex md:grid md:grid-cols-12 gap-2">
+                <span className="md:col-span-2"> {e.icon}</span>
+                <span className="md:col-span-10 hidden md:block">{e.name}</span>
               </button>
             </a>
           </Link>
         ))}
       </div>
-      <div className="col-span-9 p-2 md:p-10 ">{children}</div>
+      <div className="col-span-10 md:col-span-9 p-2 md:p-10 ">{children}</div>
     </div>
   );
 }

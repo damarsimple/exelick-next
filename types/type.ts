@@ -32,6 +32,7 @@ export interface User {
   productCount: number;
   profilepicture: Maybe<Picture>;
   banner: Maybe<Picture>;
+  subathon_time_end: string;
   is_admin: boolean;
   is_active: boolean;
   products: Maybe<ProductConnection>;
@@ -164,6 +165,7 @@ export interface Product {
   is_stackable: boolean;
   user: User;
   commands: Maybe<string[]>;
+  subathon_time: number;
   price: Maybe<number>;
   user_id: string;
   description: Maybe<string>;
@@ -209,6 +211,7 @@ export interface updateUser {
   password?: string;
   tag?: string;
   description?: string;
+  subathon_time_end?: string;
 }
 
 export interface PictureAssignInput {
@@ -229,6 +232,7 @@ export interface updateProduct {
   commands?: string[];
   price?: number;
   description?: string;
+  subathon_time?: number;
 }
 
 export interface createPurchase {
@@ -480,7 +484,7 @@ export interface send_invitationArgs {
 }
 
 export interface activate_invitationArgs {
-  username: string;
+  uuid: string;
   input: updateUser;
 }
 
