@@ -15,12 +15,6 @@ import { useUserStore } from "../../../store/user";
 import { Picture, Product, User, UserVariable } from "../../../types/type";
 import UUIDclass from "uuidjs";
 
-interface InputMap {
-  label: string;
-  name: keyof Product;
-  type?: string;
-}
-
 const GET_PRODUCT = gql`
   query GetProduct($id: ID!) {
     product(id: $id) {

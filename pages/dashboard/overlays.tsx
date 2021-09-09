@@ -3,8 +3,17 @@ import DashboardContainer from "../../components/DashboardContainer";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import Paper from "../../components/Paper";
 import AppContainer from "../../components/AppContainer";
+import { gql, useQuery } from "@apollo/client";
+import { User } from "../../types/type";
 
 export default function Index() {
+  const { data: { me } = {} } = useQuery<{ me: User }>(gql`
+    query {
+      me {
+        stream_key
+      }
+    }
+  `);
   return (
     <AppContainer title="Stream Overlay" fullScreen>
       <DashboardContainer>
@@ -49,6 +58,7 @@ export default function Index() {
                 <div className="col-span-1 md:col-span-4">
                   <Paper name="Preview">
                     <div>To Be Created</div>
+                    <div>{me?.stream_key}</div>
                   </Paper>
                 </div>
               </div>
