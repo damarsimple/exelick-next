@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @next/next/no-css-tags */
 import { NextRouter } from "next/dist/client/router";
 import Image from "next/image";
 import withRouter from "next/dist/client/with-router";
@@ -10,31 +12,31 @@ import {
   useTransition,
 } from "react-spring";
 import ImageContainer from "../../components/ImageContainer";
-
-const DonationImage = () => {
-  const styles = useSpring({
-    loop: { reverse: true },
-    from: { x: -50 },
-    to: { x: 50 },
-  });
-
+import Head from "next/head";
+import { AnimatePresence, motion } from "framer-motion";
+import { __Directive } from "graphql";
+import create from "zustand";
+import echo from "../../services/echo";
+import { Purchase } from "../../types/type";
+import { formatCurrency } from "../../helpers/formatter";
+const DonationImage = ({ purchase }: { purchase: Purchase }) => {
   return (
     <div className="flex justify-center m-10">
-      <animated.div style={styles}>
+      <div>
         <ImageContainer
           fallback="profile"
           className="rounded-full h-24 w-24 "
-          src="https://trakteer.id/storage/images/avatar/ava-kqwK2sVxMEXfACgq0luplMIrcWAm9eGA1617518306.jpg"
+          src={"/gura-headpat-gawr-gura.gif"}
           alt="Picture of the author"
           width={100}
           height={100}
         />
-      </animated.div>
+      </div>
     </div>
   );
 };
 
-const DonationMessage = () => {
+const DonationMessage = ({ purchase }: { purchase: Purchase }) => {
   const styles = useSpring({
     loop: { reverse: true },
     from: { transform: "scale(1.3)" },
@@ -45,63 +47,158 @@ const DonationMessage = () => {
     <div className="flex justify-center m-2">
       <animated.div style={styles}>
         <div className="font-semibold p-4 text-center text-white">
-          Terimakasih dan terus berkarya
+          {purchase.message}
         </div>
       </animated.div>
     </div>
   );
 };
-
-const DonationBox = () => {
+const DonationBox = ({ purchase }: { purchase: Purchase }) => {
   const [toggle, setToggle] = useState(false);
+  const styles = useSpring({
+    loop: { reverse: true },
+    from: { transform: "scale(0.9)" },
+    to: { transform: "scale(1.1)" },
+  });
 
   return (
     <div>
-      <div>
-        <DonationImage />
-        <div className="shadow rounded p-4 text-center bg-white">
-          Seseorang memberikan donasi sebesar Rp 10.000
+      <animated.div>
+        <DonationImage purchase={purchase} />
+        <div className="shadow-lg rounded p-4 text-center bg-white border-2 border-red-300">
+          <span className="font-bold text-red-600">
+            {purchase.anonymous_name}
+          </span>{" "}
+          memberikan donasi sebesar{" "}
+          <span className="font-bold text-red-600">
+            {formatCurrency(purchase.total)}
+          </span>
         </div>
-        <DonationMessage />
-      </div>
-      {/* <Transition
-        items={toggle}
-        from={{ opacity: 0 }}
-        enter={{ opacity: 1 }}
-        leave={{ opacity: 0 }}
-        reverse={toggle}
-        config={config.default}
-        onRest={() => setToggle(!toggle)}
-      >
-        {({ opacity }, item) => (
-          <animated.div
-            style={{
-              position: "absolute",
-              opacity: opacity.to({ range: [0.0, 1.0], output: [0, 1] }),
-            }}
-          >
-            <DonationImage />
-            <div className="shadow rounded p-4 text-center bg-white">
-              Seseorang memberikan donasi sebesar Rp 10.000
-            </div>
-            <DonationMessage />
-          </animated.div>
-        )}
-      </Transition> */}
+        <DonationMessage purchase={purchase} />
+      </animated.div>
     </div>
   );
 };
 
+interface NotificationStore {
+  queues: Purchase[];
+  newQueues: Partial<Purchase>[];
+  setQueues: (by: Purchase[]) => void;
+  setNewQueues: (by: Partial<Purchase>[]) => void;
+}
+
+const useStore = create<NotificationStore>((set) => ({
+  queues: [],
+  newQueues: [],
+  setQueues: (queues) => set({ queues }),
+  setNewQueues: (newQueues) => set({ newQueues }),
+}));
+
 function Notifications({ router }: { router: NextRouter }) {
-  const { key } = router.query;
+  const { key, loop } = router.query;
 
-  const [show, setShow] = useState(true);
+  const { queues, newQueues, setNewQueues, setQueues } = useStore();
 
-  // useEffect(() => {
-  // setInterval(() => setShow(!show), 3000);
-  // });
+  const [currentDonation, setCurrentDonation] = useState<
+    undefined | null | Purchase
+  >(undefined);
 
-  return <div className="m-4">{show && <DonationBox />}</div>;
+  const [show, setShow] = useState(false);
+  const [onAnimating, setOnAnimating] = useState(false);
+
+  const nextDonation = () => {
+    if (queues.length == 0) {
+      setOnAnimating(false);
+      setQueues([...(newQueues as Purchase[])]);
+      setNewQueues([]);
+      return;
+    }
+    setCurrentDonation(queues.pop());
+    setShow(true);
+    setOnAnimating(true);
+    setTimeout(() => {
+      setShow(false);
+    }, 5000);
+  };
+
+  useEffect(() => {
+    if (queues.length != 0) {
+      nextDonation();
+    }
+
+    return () => {};
+  }, [queues]);
+
+  useEffect(() => {
+    if (!onAnimating) {
+      setQueues(newQueues as Purchase[]);
+    }
+  }, [onAnimating, newQueues]);
+
+  useEffect(() => {
+    if (!key) return;
+    const ec = echo.channel("stream-key-" + key);
+    ec.listen("PurchasePaid", ({ purchase }: { purchase: Purchase }) =>
+      setNewQueues([...newQueues, purchase])
+    ).listen("PurchasePaidTest", ({ purchase }: { purchase: Purchase }) =>
+      setNewQueues([...newQueues, purchase])
+    );
+
+    return () => {};
+  }, [key]);
+
+  useEffect(() => {
+    if (loop) {
+      setInterval(
+        () =>
+          setNewQueues([
+            ...newQueues,
+            { anonymous_name: "Seseorang", total: 69420, message: "Nice" },
+          ]),
+        5000
+      );
+    }
+  }, [loop]);
+
+  return (
+    <>
+      <Head>
+        <link rel="stylesheet" href="/overlays.css" />
+      </Head>
+      <AnimatePresence
+        initial={false}
+        exitBeforeEnter={true}
+        onExitComplete={nextDonation}
+      >
+        {show && (
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            variants={{
+              hidden: {
+                y: "-90vh",
+                opacity: 0,
+              },
+              visible: {
+                y: "0",
+                opacity: 1,
+                transition: {
+                  duration: 0.1,
+                  type: "spring",
+                  damping: 25,
+                  stiffness: 500,
+                },
+              },
+              exit: { y: "90vh", opacity: 0 },
+            }}
+          >
+            {currentDonation && <DonationBox purchase={currentDonation} />}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
 }
 
 export default withRouter(Notifications);

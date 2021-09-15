@@ -8,6 +8,7 @@ import React, { useState } from "react";
 import { MdDelete } from "react-icons/md";
 import AppContainer from "../components/AppContainer";
 import Loader from "../components/BoxLoader";
+import Button from "../components/Button";
 import ImageContainer from "../components/ImageContainer";
 import ProductCard, { SkeletonProductCard } from "../components/ProductCard";
 import SearchBox from "../components/SearchBox";
@@ -151,12 +152,9 @@ function Username({
                 <div className="text-gray-400">Qty: {qty}</div>
               </div>
               <div className="flex flex-col w-18 font-medium items-end">
-                <button
-                  onClick={() => removeCarts(product)}
-                  className="w-4 h-4 mb-6 hover:bg-red-200 rounded-full cursor-pointer text-red-700"
-                >
+                <Button onClick={() => removeCarts(product)} color="RED">
                   <MdDelete size="1.5em" />
-                </button>
+                </Button>
                 {formatCurrency(product.price)}
               </div>
             </div>
@@ -164,21 +162,16 @@ function Username({
           <div className="p-4 justify-center flex">
             <Link href="/checkout">
               <a>
-                <button
-                  className="bg-white hover:bg-gray-50 text-base  undefined  hover:scale-110 focus:outline-none flex justify-center px-4 py-2 rounded font-bold cursor-pointer 
-                              hover:bg-teal-700 hover:text-teal-100 
-                              bg-teal-100 
-                              text-teal-700 
-                              border duration-200 ease-in-out 
-                              border-teal-600 transition"
-                >
-                  Checkout{" "}
-                  {formatCurrency(
-                    carts.reduce((e, i) => {
-                      return e + i.qty * (i.product.price ?? 0);
-                    }, 0)
-                  )}
-                </button>
+                <Button>
+                  <span>
+                    Checkout{" "}
+                    {formatCurrency(
+                      carts.reduce((e, i) => {
+                        return e + i.qty * (i.product.price ?? 0);
+                      }, 0)
+                    )}
+                  </span>
+                </Button>
               </a>
             </Link>
           </div>

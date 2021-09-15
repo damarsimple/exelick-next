@@ -3,17 +3,34 @@ import DashboardContainer from "../../components/DashboardContainer";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import Paper from "../../components/Paper";
 import AppContainer from "../../components/AppContainer";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { User } from "../../types/type";
+import Button from "../../components/Button";
+import { toast } from "react-toastify";
 
 export default function Index() {
-  const { data: { me } = {} } = useQuery<{ me: User }>(gql`
+  const { data: { me } = {}, loading } = useQuery<{ me: User }>(gql`
     query {
       me {
         stream_key
       }
     }
   `);
+
+  const [sendDonation, { loading: loadingSendDonation }] = useMutation(
+    gql`
+      mutation TestDonation($streamKey: String!) {
+        test_donation(stream_key: $streamKey) {
+          message
+          status
+        }
+      }
+    `
+  );
+  const MY_URL =
+    process.env.NEXT_PUBLIC_URL +
+    "/overlays/notifications/?key=" +
+    me?.stream_key;
   return (
     <AppContainer title="Stream Overlay" fullScreen>
       <DashboardContainer>
@@ -56,10 +73,65 @@ export default function Index() {
                   </Paper>
                 </div>
                 <div className="col-span-1 md:col-span-4">
-                  <Paper name="Preview">
-                    <div>To Be Created</div>
-                    <div>{me?.stream_key}</div>
-                  </Paper>
+                  {!loading && (
+                    <>
+                      <Paper name="Preview">
+                        <iframe
+                          height={300}
+                          className="w-full overflow-hidden"
+                          src={
+                            process.env.NEXT_PUBLIC_URL +
+                            "/overlays/notifications/?loop=true&key=" +
+                            me?.stream_key
+                          }
+                        ></iframe>
+                      </Paper>
+                      <Paper name="Widget URL">
+                        <div className="flex gap-2 mb-4">
+                          <Button
+                            color="BLUE"
+                            onClick={() => {
+                              navigator.clipboard
+                                .writeText(MY_URL)
+                                .then(() =>
+                                  toast.success(
+                                    "Berhasil memindahkan link ke clipboard"
+                                  )
+                                )
+                                .catch((e) =>
+                                  toast.error(
+                                    "gagal memindahkan link ke clipboard " + e
+                                  )
+                                );
+                            }}
+                          >
+                            Copy URL
+                          </Button>
+                          <a target="_blank" rel="__ noreferrer" href={MY_URL}>
+                            <Button color="BLUE">OPEN URL</Button>
+                          </a>
+                        </div>
+
+                        <Button
+                          loading={loadingSendDonation}
+                          color="BLUE"
+                          onClick={() => {
+                            sendDonation({
+                              variables: { streamKey: me?.stream_key },
+                            }).then((e) =>
+                              e.data.test_donation.status
+                                ? toast.success("Berhasil")
+                                : toast.error(
+                                    "Gagal " + e.data.test_donation.message
+                                  )
+                            );
+                          }}
+                        >
+                          TEST DONASI
+                        </Button>
+                      </Paper>
+                    </>
+                  )}
                 </div>
               </div>
             </TabPanel>

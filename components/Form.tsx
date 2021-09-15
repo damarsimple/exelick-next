@@ -3,6 +3,7 @@ import { get } from "lodash";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Product } from "../types/type";
+import Button from "./Button";
 import Input from "./Input";
 
 interface InputMap<T> {
@@ -79,13 +80,9 @@ export default function Form<T, N>({
           required={e.required}
         />
       ))}
-      <button
-        disabled={mutationLoading}
-        onClick={handleSubmit}
-        className="text-lg text-white capitalize font-semibold rounded bg-blue-600 hover:bg-blue-900 p-2 w-full my-4"
-      >
+      <Button loading={mutationLoading} type="submit" color="BLUE">
         SUBMIT
-      </button>
+      </Button>
     </form>
   );
 }

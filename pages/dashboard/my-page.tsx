@@ -3,6 +3,7 @@ import gql from "graphql-tag";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import AppContainer from "../../components/AppContainer";
+import Button from "../../components/Button";
 import DashboardContainer from "../../components/DashboardContainer";
 import ImageContainer from "../../components/ImageContainer";
 import Paper from "../../components/Paper";
@@ -183,17 +184,18 @@ export default function Index() {
                   }}
                 />
               )}
-              <button
+              <Button
                 onClick={() =>
                   setShowMap({
                     ...showMap,
                     profilepicture: !showMap.profilepicture,
                   })
                 }
-                className="w-full text-lg text-white capitalize font-semibold rounded bg-blue-600 hover:bg-blue-900 p-4"
               >
-                {showMap?.profilepicture ? "UBAH" : "BATAL"} PROFILEPICTURE
-              </button>
+                <span>
+                  {showMap?.profilepicture ? "UBAH" : "BATAL"} PROFILEPICTURE
+                </span>
+              </Button>
             </Paper>
             <Paper name="Banner" className="flex flex-col justify-between">
               {showMap.banner ? (
@@ -219,17 +221,16 @@ export default function Index() {
                   }}
                 />
               )}
-              <button
+              <Button
                 onClick={() =>
                   setShowMap({
                     ...showMap,
                     banner: !showMap.banner,
                   })
                 }
-                className="w-full text-lg text-white capitalize font-semibold rounded bg-blue-600 hover:bg-blue-900 p-4"
               >
-                {showMap?.banner ? "UBAH" : "BATAL"} BANNER
-              </button>
+                <span>{showMap?.banner ? "UBAH" : "BATAL"} BANNER</span>
+              </Button>
             </Paper>
           </div>
           {userInputMap.map((e, i) =>
@@ -269,13 +270,13 @@ export default function Index() {
               </div>
             )
           )}
-          <button
-            disabled={loading || mutationLoading}
+          <Button
+            loading={loading || mutationLoading}
             onClick={handleSubmit}
-            className="text-lg text-white capitalize font-semibold rounded bg-red-600 hover:bg-red-900 p-4"
+            color="RED"
           >
             Simpan
-          </button>
+          </Button>
         </div>
       </DashboardContainer>
     </AppContainer>

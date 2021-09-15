@@ -8,6 +8,7 @@ import { useAuthStore } from "../store/auth";
 import { CORE_USER_INFO_MINIMAL_FIELD } from "../fragments/fragments";
 import { useUserStore } from "../store/user";
 import ImageContainer from "../components/ImageContainer";
+import Button from "../components/Button";
 
 const LOGIN = gql`
   ${CORE_USER_INFO_MINIMAL_FIELD}
@@ -134,13 +135,9 @@ export default function Login() {
                   </label>
                 </div>
                 <div>
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full px-4 py-2 text-lg font-semibold text-white transition-colors duration-300 bg-blue-500 rounded-md shadow hover:bg-blue-600 focus:outline-none focus:ring-blue-200 focus:ring-4"
-                  >
-                    Log in
-                  </button>
+                  <Button loading={loading} type="submit" color="BLUE">
+                    Log In
+                  </Button>
                 </div>
                 <div className="flex flex-col space-y-5">
                   <span className="flex items-center justify-center space-x-2">
@@ -151,14 +148,14 @@ export default function Login() {
                     <span className="h-px bg-gray-400 w-14" />
                   </span>
                   <div className="flex flex-col space-y-4">
-                    <button className="flex items-center justify-center px-4 py-2 space-x-2 transition-colors duration-300 border border-gray-800 rounded-md group hover:bg-gray-800 focus:outline-none">
+                    <Button>
                       <span>
                         <AiFillGoogleCircle size="1.5em" />
                       </span>
                       <span className="text-sm font-medium text-gray-800 group-hover:text-white">
                         Google
                       </span>
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </form>

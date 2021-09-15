@@ -36,6 +36,7 @@ export interface User {
   is_admin: boolean;
   is_active: boolean;
   products: Maybe<ProductConnection>;
+  transactions: Maybe<TransactionConnection>;
 }
 
 export interface UserSocial {
@@ -99,7 +100,7 @@ export interface ServerMetadata {
 
 export interface UserVariable {
   name: string;
-  value: string;
+  value: Maybe<string>;
 }
 
 export interface Picture {
@@ -176,6 +177,51 @@ export interface PurchaseProductPivot {
   qty: Maybe<number>;
 }
 
+/** A paginated list of Transaction edges. */
+export interface TransactionConnection {
+  /** Pagination information about the list of edges.*/
+  pageInfo: PageInfo;
+  /** A list of Transaction edges.*/
+  edges: TransactionEdge[];
+}
+
+/** An edge that contains a node of type Transaction and a cursor. */
+export interface TransactionEdge {
+  /** The Transaction node.*/
+  node: Transaction;
+  /** A unique cursor that can be used for pagination.*/
+  cursor: string;
+}
+
+export interface Transaction {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  payment_method: string;
+  status: string;
+  request: Maybe<string>;
+  amount: Maybe<number>;
+  callback: Maybe<string>;
+  user: User;
+  purchase: Purchase;
+}
+
+export interface Purchase {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  products: Product[];
+  subtotal: Maybe<number>;
+  tax: Maybe<number>;
+  total: Maybe<number>;
+  extra: Maybe<string>;
+  anonymous_name: Maybe<string>;
+  message: Maybe<string>;
+  user: Maybe<User>;
+  receiver: User;
+  transaction: Transaction;
+}
+
 export interface TaxResult {
   tax: number;
 }
@@ -218,6 +264,11 @@ export interface PictureAssignInput {
   id: string;
 }
 
+export interface UserVariableInput {
+  name: string;
+  value: string;
+}
+
 export interface createProduct {
   is_stackable?: boolean;
   name: string;
@@ -255,34 +306,6 @@ export interface PurchaseData {
   purchase: Maybe<Purchase>;
   transaction: Maybe<Transaction>;
   payment: Maybe<MidtransRequestOutput>;
-}
-
-export interface Purchase {
-  id: string;
-  created_at: string;
-  updated_at: string;
-  products: Product[];
-  subtotal: Maybe<number>;
-  tax: Maybe<number>;
-  total: Maybe<number>;
-  extra: Maybe<string>;
-  anonymous_name: Maybe<string>;
-  message: Maybe<string>;
-  user: Maybe<User>;
-  receiver: User;
-  transaction: Transaction;
-}
-
-export interface Transaction {
-  id: string;
-  created_at: string;
-  updated_at: string;
-  payment_method: string;
-  status: string;
-  request: Maybe<string>;
-  amount: Maybe<number>;
-  callback: Maybe<string>;
-  user: User;
 }
 
 export interface MidtransRequestOutput {
@@ -447,6 +470,11 @@ export interface update_user_pictureArgs {
   id: string;
   profilepicture?: PictureAssignInput;
   banner?: PictureAssignInput;
+}
+
+export interface update_user_customArgs {
+  id: string;
+  variables: UserVariableInput[];
 }
 
 export interface createProductArgs {

@@ -4,8 +4,55 @@ import Image from "next/image";
 import AppContainer from "../../components/AppContainer";
 import { formatCurrency } from "../../helpers/formatter";
 import ImageContainer from "../../components/ImageContainer";
+import { useQuery, gql } from "@apollo/client";
+import { Transaction, User } from "../../types/type";
+import BoxLoader from "../../components/BoxLoader";
+import moment from "moment";
+import { CORE_PAGE_INFO_FIELD } from "../../fragments/fragments";
 
 export default function Index() {
+  const { data: { me } = {}, loading } = useQuery<{ me: User }>(gql`
+    query {
+      me {
+        id
+        stream_key
+      }
+    }
+  `);
+
+  const renderTableRow = (e: Transaction) => (
+    <tr className="text-gray-700 w-full">
+      <td className="px-4 py-3 border">
+        <div className="flex items-center text-sm">
+          <div className="relative w-8 h-8 mr-3 rounded-full md:block">
+            {/* <ImageContainer
+              fallback="payment_method"
+              alt="Picture of the author"
+              width={50}
+              height={50}
+              src="https://dretail.id/asset/img/image/features/payment/qris.png"
+            /> */}
+            <div
+              className="absolute inset-0 rounded-full shadow-inner"
+              aria-hidden="true"
+            />
+          </div>
+          <div>
+            <p className="font-semibold text-black">
+              {e.purchase.anonymous_name}
+            </p>
+            <p className="text-xs text-gray-600">{e.payment_method}</p>
+          </div>
+        </div>
+      </td>
+      <td className="px-4 py-3 text-xs border">{formatCurrency(e.amount)}</td>
+      <td className="px-4 py-3 text-xs border">{e.purchase.message}</td>
+      <td className="px-4 py-3 text-sm border">
+        {moment(e.updated_at).format("D/M/YYYY")}
+      </td>
+    </tr>
+  );
+
   return (
     <AppContainer title="Transactions" fullScreen>
       <DashboardContainer>
@@ -20,40 +67,39 @@ export default function Index() {
               </tr>
             </thead>
             <tbody className="bg-white">
-              {[...Array(20)].map((e, i) => (
-                <tr className="text-gray-700" key={i}>
-                  <td className="px-4 py-3 border">
-                    <div className="flex items-center text-sm">
-                      <div className="relative w-8 h-8 mr-3 rounded-full md:block">
-                        <ImageContainer
-                          fallback="payment_method"
-                          alt="Picture of the author"
-                          width={50}
-                          height={50}
-                          src="https://dretail.id/asset/img/image/features/payment/qris.png"
-                        />
-                        <div
-                          className="absolute inset-0 rounded-full shadow-inner"
-                          aria-hidden="true"
-                        />
-                      </div>
-                      <div>
-                        <p className="font-semibold text-black">
-                          12313123-213123-231231-121
-                        </p>
-                        <p className="text-xs text-gray-600">Qris</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 text-xs border">
-                    {formatCurrency(10000)}
-                  </td>
-                  <td className="px-4 py-3 text-xs border">
-                    Pembelian oleh User Anonymous
-                  </td>
-                  <td className="px-4 py-3 text-sm border">6/10/2021</td>
-                </tr>
-              ))}
+              <BoxLoader
+                raw
+                Component={renderTableRow}
+                variables={{ id: me?.id }}
+                fields="transactions"
+                query={gql`
+                  ${CORE_PAGE_INFO_FIELD}
+                  query GetMyTransaction(
+                    $id: ID!
+                    $first: Int!
+                    $after: String
+                  ) {
+                    transactions(user_id: $id, first: $first, after: $after) {
+                      edges {
+                        node {
+                          id
+                          status
+                          amount
+                          payment_method
+                          purchase {
+                            message
+                            anonymous_name
+                          }
+                        }
+                      }
+                      pageInfo {
+                        ...CorePageInfoField
+                      }
+                    }
+                  }
+                `}
+                SkeletonComponent={() => <></>}
+              />
             </tbody>
           </table>
         </div>

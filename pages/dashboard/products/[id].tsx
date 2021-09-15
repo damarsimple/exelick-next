@@ -14,6 +14,7 @@ import PictureUpload from "../../../components/PictureUpload";
 import { useUserStore } from "../../../store/user";
 import { Picture, Product, User, UserVariable } from "../../../types/type";
 import UUIDclass from "uuidjs";
+import Button from "../../../components/Button";
 
 const GET_PRODUCT = gql`
   query GetProduct($id: ID!) {
@@ -168,13 +169,14 @@ function Id({ router }: { router: NextRouter }) {
                   </Paper>
                 )}
 
-                <button
+                <Button
                   onClick={() => setChangepicture(!changepicture)}
                   type="button"
-                  className="text-lg text-white capitalize font-semibold rounded bg-blue-600 hover:bg-blue-900 p-2 w-full my-4"
                 >
-                  {!changepicture ? "UBAH" : "BATAL UBAH"} GAMBAR PRODUK
-                </button>
+                  <span>
+                    {!changepicture ? "UBAH" : "BATAL UBAH"} GAMBAR PRODUK
+                  </span>
+                </Button>
               </div>
               {!loading && !error && product && (
                 <Paper name="Attribut">
@@ -227,29 +229,25 @@ function Id({ router }: { router: NextRouter }) {
           <TabPanel>
             <Paper name="Attribut">
               <div className="flex flex-col gap-2">
-                <button
-                  onClick={() => setCommands([...commands, "kill ...."])}
-                  className="w-full p-4 rounded shadow bg-blue-400 hover:bg-blue-500 uppercase font-bold text-lg text-white"
-                >
+                <Button onClick={() => setCommands([...commands, "kill ...."])}>
                   BUAT COMMAND BARU
-                </button>
-                <button
-                  onClick={() => setShowCompiled(!showCompiled)}
-                  className="w-full p-4 rounded shadow bg-blue-400 hover:bg-blue-500 uppercase font-bold text-lg text-white"
-                >
-                  {showCompiled ? "SEMBUNYIKAN" : "TUNJUKKAN"} COMPILED COMMANDS
-                </button>
-                <button
-                  disabled={lCommand}
+                </Button>
+                <Button onClick={() => setShowCompiled(!showCompiled)}>
+                  <span>
+                    {showCompiled ? "SEMBUNYIKAN" : "TUNJUKKAN"} COMPILED
+                    COMMANDS
+                  </span>
+                </Button>
+                <Button
+                  loading={lCommand}
                   onClick={() =>
                     updateCommands({ variables: { id: product?.id, commands } })
                       .then((e) => toast.success("sukses mengubah data produk"))
                       .catch((e) => toast.error("gagal mengubah data produk"))
                   }
-                  className="w-full p-4 rounded shadow bg-blue-400 hover:bg-blue-500 uppercase font-bold text-lg text-white"
                 >
                   SIMPAN PERUBAHAN
-                </button>
+                </Button>
 
                 {showCompiled
                   ? commands.map((e, i) => {
@@ -304,18 +302,17 @@ function Id({ router }: { router: NextRouter }) {
           <TabPanel>
             <Paper name="Attribut">
               <div className="flex flex-col gap-2">
-                <button
+                <Button
                   onClick={() =>
                     setVariableHolder([
                       ...variableHolder,
                       { name: UUIDclass.generate(), value: "" },
                     ])
                   }
-                  className="w-full p-4 rounded shadow bg-blue-400 hover:bg-blue-500 uppercase font-bold text-lg text-white"
                 >
                   BUAT VARIABEL BARU
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() =>
                     updateVariable({
                       variables: {
@@ -328,11 +325,10 @@ function Id({ router }: { router: NextRouter }) {
                       toast.success("Berhasil mengubah data variable !")
                     )
                   }
-                  disabled={lVariable}
-                  className="w-full p-4 rounded shadow bg-blue-400 hover:bg-blue-500 uppercase font-bold text-lg text-white"
+                  loading={lVariable}
                 >
                   SIMPAN PERUBAHAN
-                </button>
+                </Button>
                 {variableHolder?.map((e, i) => (
                   <VariableEditor
                     variable={e}
@@ -384,36 +380,27 @@ function CommandEditor({
       )}
       {onEdit ? (
         <div className="flex gap-3">
-          <button
-            className="shadow rounded p-2 bg-green-500 text-white"
+          <Button
+            color="GREEN"
             onClick={() => {
               setCommand(commandEdit);
               flip();
             }}
           >
             <MdSave size="1.5em" />
-          </button>
-          <button
-            className="shadow rounded p-2 bg-red-500 text-white"
-            onClick={flip}
-          >
+          </Button>
+          <Button color="RED" onClick={flip}>
             <MdCancel size="1.5em" />
-          </button>
+          </Button>
         </div>
       ) : (
         <div className="flex gap-3">
-          <button
-            className="shadow rounded p-2 bg-yellow-500 text-white"
-            onClick={flip}
-          >
+          <Button color="YELLOW" onClick={flip}>
             <MdEdit size="1.5em" />
-          </button>
-          <button
-            className="shadow rounded p-2 bg-red-500 text-white"
-            onClick={handleDelete}
-          >
+          </Button>
+          <Button color="RED" onClick={handleDelete}>
             <MdDelete size="1.5em" />
-          </button>
+          </Button>
         </div>
       )}
     </div>
@@ -447,19 +434,16 @@ function VariableEditor({
         <input
           className="shadow rounded border-1 w-full p-2 text-lg mr-4"
           type="text"
-          value={value}
+          value={value ?? ""}
           onChange={(x) => {
             setValue(x.target.value);
             setVariable({ ...variable, value: x.target.value });
           }}
         />
       </div>
-      <button
-        className="shadow rounded p-2 bg-red-500 text-white"
-        onClick={handleDelete}
-      >
+      <Button color="RED" onClick={handleDelete}>
         <MdDelete size="1.5em" />
-      </button>
+      </Button>
     </div>
   );
 }

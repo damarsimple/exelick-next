@@ -51,7 +51,7 @@ export default function DashboardContainer({ children }: DCContainer) {
       icon: <MdReceipt size="1.5em" />,
     },
     {
-      name: "Minecraft Server",
+      name: "Minecraft Hook",
       url: "/dashboard/mc-server",
       icon: <MdGamepad size="1.5em" />,
     },

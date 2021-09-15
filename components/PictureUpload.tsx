@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { AiOutlineLoading } from "react-icons/ai";
 import { toast } from "react-toastify";
 import { Picture } from "../types/type";
+import Button from "./Button";
 import ImageContainer from "./ImageContainer";
 import Paper from "./Paper";
 
@@ -80,14 +81,14 @@ export default function PictureUpload(e: {
             ) : e.auto ? (
               <div></div>
             ) : (
-              <button
+              <Button
                 type="button"
-                disabled={mutationLoading}
+                loading={mutationLoading}
                 onClick={() => handleUpload()}
-                className="text-lg text-white capitalize font-semibold rounded bg-blue-600 hover:bg-blue-900 p-2 w-full my-4"
+                color="BLUE"
               >
                 UPLOAD
-              </button>
+              </Button>
             )}
           </>
         )}

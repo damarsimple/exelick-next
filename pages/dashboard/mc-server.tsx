@@ -3,8 +3,19 @@ import DashboardContainer from "../../components/DashboardContainer";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import Paper from "../../components/Paper";
 import AppContainer from "../../components/AppContainer";
+import { useQuery, gql } from "@apollo/client";
+import { User } from "../../types/type";
+import { toast } from "react-toastify";
+import Button from "../../components/Button";
 
 export default function Index() {
+  const { data: { me } = {}, loading } = useQuery<{ me: User }>(gql`
+    query {
+      me {
+        stream_key
+      }
+    }
+  `);
   return (
     <AppContainer title="Setting Minecraft Server" fullScreen>
       <DashboardContainer>
@@ -16,28 +27,29 @@ export default function Index() {
 
             <TabPanel>
               <Paper name="Config">
-                <div className="flex flex-col gap-4">
-                  {[
-                    "Server Websender Hostname",
-                    "Server Websender Port",
-                    "Server Websender Password",
-                  ].map((e, i) => (
-                    <div key={i} className="pb-6 md:pb-0 flex flex-col">
-                      <label className="input-label text-lg mb-2 font-semibold italic">
-                        {e}
-                      </label>
-                      <div>
-                        <input
-                          id="handle"
-                          type="text"
-                          className="input-field inline-flex items-baseline border-none shadow-md bg-white placeholder-blue w-full p-4 no-outline text-dusty-blue-darker"
-                          name="handle"
-                          placeholder="jane"
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                {me?.stream_key ? (
+                  <Button
+                    color="BLUE"
+                    onClick={() => {
+                      navigator.clipboard
+                        .writeText(me?.stream_key)
+                        .then(() =>
+                          toast.success(
+                            "Berhasil memindahkan link ke clipboard"
+                          )
+                        )
+                        .catch((e) =>
+                          toast.error(
+                            "gagal memindahkan link ke clipboard " + e
+                          )
+                        );
+                    }}
+                  >
+                    Copy KUNCI Anda
+                  </Button>
+                ) : (
+                  <p>Loading...</p>
+                )}
               </Paper>
             </TabPanel>
             <TabPanel>

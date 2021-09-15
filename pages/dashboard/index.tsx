@@ -13,8 +13,13 @@ type RenderType = "number" | "percentage" | "currency" | "truth";
 
 const GET_DATA = gql`
   query {
-    me {
-      productCount
+    get_my_dashboard_data {
+      total_product
+      analytics_sentiment
+      transaction_total
+      transaction_total_month
+      purchase_total
+      purchase_total_month
     }
   }
 `;
@@ -29,7 +34,16 @@ interface BubbleProp extends NumberProp {
 }
 
 export default function Index() {
-  const { data, loading, error } = useQuery<{ me: User }>(GET_DATA);
+  const { data, loading, error } = useQuery<{
+    get_my_dashboard_data: {
+      total_product: number;
+      analytics_sentiment: number;
+      transaction_total: number;
+      transaction_total_month: number;
+      purchase_total: number;
+      purchase_total_month: number;
+    };
+  }>(GET_DATA);
 
   const NumberRender = (e: NumberProp) => {
     switch (e.type) {
@@ -72,8 +86,6 @@ export default function Index() {
     </div>
   );
 
-  const user = data?.me;
-
   return (
     <AppContainer title="Dashboard" fullScreen>
       <DashboardContainer>
@@ -91,37 +103,38 @@ export default function Index() {
                     {[
                       {
                         name: "Total Produk",
-                        count: user?.productCount,
+                        count: data?.get_my_dashboard_data.total_product,
                         type: "number",
                         icon: <MdShoppingCart color="blue" size="2em" />,
                       },
                       {
                         name: "Total Analisis Sentimen Donasi",
-                        count: 0,
+                        count: data?.get_my_dashboard_data.analytics_sentiment,
                         type: "percentage",
                         icon: <MdShoppingCart color="blue" size="2em" />,
                       },
                       {
                         name: "Total Transaksi",
-                        count: 1000000,
+                        count: data?.get_my_dashboard_data.transaction_total,
                         type: "currency",
                         icon: <AiOutlineMoneyCollect color="blue" size="2em" />,
                       },
                       {
                         name: "Transaksi Bulan Ini",
-                        count: 1000000,
+                        count:
+                          data?.get_my_dashboard_data.transaction_total_month,
                         type: "currency",
                         icon: <MdAttachMoney color="blue" size="2em" />,
                       },
                       {
                         name: "Total Pembelian / Donasi",
-                        count: 10000,
+                        count: data?.get_my_dashboard_data.purchase_total,
                         type: "number",
                         icon: <MdVerifiedUser color="blue" size="2em" />,
                       },
                       {
                         name: "Pembelian / Donasi Bulan Ini",
-                        count: 100,
+                        count: data?.get_my_dashboard_data.purchase_total_month,
                         type: "number",
                         icon: <MdVerifiedUser color="blue" size="2em" />,
                       },

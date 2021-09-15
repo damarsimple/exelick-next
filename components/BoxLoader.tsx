@@ -14,6 +14,7 @@ import { get } from "lodash";
 import { useInView } from "react-intersection-observer";
 import { toast } from "react-toastify";
 import Link from "next/link";
+import Button from "./Button";
 
 interface Id {
   id: string;
@@ -31,6 +32,7 @@ interface BoxProps<T extends Id> {
   fetchPolicy?: WatchQueryFetchPolicy;
   withEditDelete?: boolean;
   editUrl?: string;
+  raw?: boolean;
 }
 
 interface PaginatorInfo {
@@ -55,6 +57,7 @@ export default function Loader<T extends Id>({
   deleteQuery,
   editUrl,
   withEditDelete,
+  raw,
 }: BoxProps<T>) {
   const [
     mutateFunction,
@@ -128,7 +131,16 @@ export default function Loader<T extends Id>({
 
   if (error) return <p>Error :( {error.message}</p>;
 
-  return (
+  return raw ? (
+    <>
+      {datas.map((e, i) => (
+        <MakeComponent {...e.node} key={e.node.id} />
+      ))}
+      <div ref={ref}>
+        {pageInfo?.hasNextPage && <SkeletonGrid gridLength={1} />}
+      </div>
+    </>
+  ) : (
     <div>
       <div className={className}>
         {datas.map((e, i) => (
@@ -137,17 +149,12 @@ export default function Loader<T extends Id>({
               <div className="flex justify-between">
                 <Link href={editUrl + e.node.id}>
                   <a className="w-full">
-                    <button className="p-4 w-full bg-yellow-400 hover:bg-yellow-500 font-semibold">
-                      EDIT
-                    </button>
+                    <Button color="YELLOW">EDIT</Button>
                   </a>
                 </Link>
-                <button
-                  onClick={() => handleDelete(e.node)}
-                  className="p-4 w-full bg-red-400 hover:bg-red-500 font-semibold"
-                >
+                <Button onClick={() => handleDelete(e.node)} color="RED">
                   DELETE
-                </button>
+                </Button>
               </div>
             )}
             <MakeComponent {...e.node} />

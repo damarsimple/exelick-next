@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { User } from "../types/type";
 import ImageContainer from "./ImageContainer";
+import Button from "./Button";
 
 export default function UserCard(e: User) {
   return (
@@ -20,9 +21,7 @@ export default function UserCard(e: User) {
       <p className="text-sm truncate">{e.tag}</p>
       <Link href={"/" + e.username}>
         <a>
-          <button className="bg-gray-200 hover:bg-gray-300 rounded font-bold p-2 w-full text-dark uppercase">
-            Donasi
-          </button>
+          <Button color="GRAY">Donasi</Button>
         </a>
       </Link>
     </div>
@@ -40,10 +39,9 @@ export function UserCardSkeleton() {
       <p className="h-6 bg-gray-100 rounded animate-pulse"></p>
       <Link href="/username">
         <a>
-          <button
-            className="bg-gray-100 animate-pulse w-full rounded h-8"
-            disabled
-          ></button>
+          <Button color="GRAY" loading>
+            Donasi
+          </Button>
         </a>
       </Link>
     </div>
