@@ -9,6 +9,7 @@ import { Transaction, User } from "../../types/type";
 import BoxLoader from "../../components/BoxLoader";
 import moment from "moment";
 import { CORE_PAGE_INFO_FIELD } from "../../fragments/fragments";
+import { AiOutlineLoading } from "react-icons/ai";
 
 export default function Index() {
   const { data: { me } = {}, loading } = useQuery<{ me: User }>(gql`
@@ -98,7 +99,11 @@ export default function Index() {
                     }
                   }
                 `}
-                SkeletonComponent={() => <></>}
+                SkeletonComponent={() => (
+                  <tr className="text-gray-700 w-full">
+                    <AiOutlineLoading size="2.5em" className="animate-spin" />
+                  </tr>
+                )}
               />
             </tbody>
           </table>
