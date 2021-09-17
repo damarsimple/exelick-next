@@ -19,3 +19,12 @@ export const CORE_USER_INFO_MINIMAL_FIELD = gql`
     description
   }
 `;
+
+export const ALL_OVERLAY_DATA = gql`
+  fragment AllOverlayData on OverlayData {
+    theme
+    message
+    color
+    duration
+  }
+`;

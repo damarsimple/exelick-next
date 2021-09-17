@@ -1,21 +1,77 @@
-import React from "react";
+import React, { useState } from "react";
 import DashboardContainer from "../../components/DashboardContainer";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import Paper from "../../components/Paper";
 import AppContainer from "../../components/AppContainer";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { User } from "../../types/type";
+import {
+  Overlay,
+  OverlayData,
+  OverlayType,
+  Picture,
+  User,
+} from "../../types/type";
 import Button from "../../components/Button";
 import { toast } from "react-toastify";
+import Form from "../../components/Form";
+import { ALL_OVERLAY_DATA } from "../../fragments/fragments";
+import PictureUpload from "../../components/PictureUpload";
+
+const UPDATE_MUTATION = gql`
+  mutation UpdateOverlay(
+    $theme: NotificationTheme
+    $type: OverlayType!
+    $message: String
+    $color: String
+    $duration: Int
+    $audio_id: ID
+    $picture_id: ID
+  ) {
+    create_update_overlay(
+      theme: $theme
+      type: $type
+      message: $message
+      color: $color
+      duration: $duration
+      picture_id: $picture_id
+      audio_id: $audio_id
+    ) {
+      id
+      type
+      metadata {
+        theme
+        message
+        color
+        duration
+      }
+    }
+  }
+`;
 
 export default function Index() {
   const { data: { me } = {}, loading } = useQuery<{ me: User }>(gql`
+    ${ALL_OVERLAY_DATA}
     query {
       me {
         stream_key
+        overlays {
+          type
+          thumbnail {
+            id
+          }
+          metadata {
+            ...AllOverlayData
+          }
+        }
       }
     }
   `);
+
+  const OverlayMap: { [e: string]: Overlay } =
+    me?.overlays?.reduce(
+      (obj, item) => Object.assign(obj, { [item.type]: item }),
+      {}
+    ) ?? {};
 
   const [sendDonation, { loading: loadingSendDonation }] = useMutation(
     gql`
@@ -31,6 +87,10 @@ export default function Index() {
     process.env.NEXT_PUBLIC_URL +
     "/overlays/notifications/?key=" +
     me?.stream_key;
+
+  const [pictureThumbnail, setpictureThumbnail] = useState<null | Picture>(
+    null
+  );
   return (
     <AppContainer title="Stream Overlay" fullScreen>
       <DashboardContainer>
@@ -43,34 +103,54 @@ export default function Index() {
 
             <TabPanel>
               <div className="grid  grid-cols-1 md:grid-cols-12 gap-2">
-                <div className="col-span-1 md:col-span-8 order-last">
-                  <Paper name="Config">
-                    <div className="flex flex-col gap-4">
-                      {[
-                        "Tema",
-                        "Color",
-                        "Message",
-                        "Duration",
-                        "Audio",
-                        "Custom Audio",
-                      ].map((e, i) => (
-                        <div key={i} className="pb-6 md:pb-0 flex flex-col">
-                          <label className="input-label text-lg mb-2 font-semibold italic">
-                            {e}
-                          </label>
-                          <div>
-                            <input
-                              id="handle"
-                              type="text"
-                              className="input-field inline-flex items-baseline border-none shadow-md bg-white placeholder-blue w-full p-4 no-outline text-dusty-blue-darker"
-                              name="handle"
-                              placeholder="jane"
-                            />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </Paper>
+                <div className="col-span-1 md:col-span-8 order-last flex flex-col gap-2">
+                  <PictureUpload
+                    name="Thumbnail"
+                    onUploadFinish={setpictureThumbnail}
+                  />
+                  {!loading && (
+                    <Paper name="Attribut">
+                      <Form<OverlayData, { create_update_overlay: Overlay }>
+                        fields="create_update_overlay"
+                        attributes={[
+                          {
+                            label: "Pesan",
+                            name: "message",
+                            required: true,
+                            information:
+                              "Memiliki variabel khusus $name $total",
+                          },
+                          {
+                            label: "Warna",
+                            name: "color",
+                            type: "color",
+                            required: true,
+                          },
+
+                          {
+                            label: "Durasi (detik)",
+                            name: "duration",
+                            type: "number",
+                            required: true,
+                          },
+                        ]}
+                        mutationQuery={UPDATE_MUTATION}
+                        addedValueMap={{
+                          type: OverlayType.Notification,
+                          picture_id:
+                            pictureThumbnail?.id ??
+                            OverlayMap[OverlayType.Notification].thumbnail?.id,
+                        }}
+                        defaultValueMap={{
+                          ...(OverlayMap[OverlayType.Notification]
+                            ?.metadata as OverlayData),
+                        }}
+                        afterSubmit={() =>
+                          toast.success("Berhasil mengupdate overlay")
+                        }
+                      />
+                    </Paper>
+                  )}
                 </div>
                 <div className="col-span-1 md:col-span-4">
                   {!loading && (

@@ -93,7 +93,7 @@ function Username({
                 $first: Int!
                 $after: String
                 $name: String
-                $user_id: ID
+                $user_id: ID!
               ) {
                 products(
                   first: $first

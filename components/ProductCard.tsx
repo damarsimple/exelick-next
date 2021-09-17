@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Image from "next/image";
 import { MdShoppingCart } from "react-icons/md";
 import { AiFillMinusCircle, AiFillPlusCircle } from "react-icons/ai";
 import { Product } from "../types/type";
@@ -7,6 +6,7 @@ import { formatCurrency } from "../helpers/formatter";
 import { useCartsStore } from "../store/carts";
 import { toast } from "react-toastify";
 import ImageContainer from "./ImageContainer";
+import Button from "./Button";
 
 export default function ProductCard(e: Product) {
   const [count, setCount] = useState(1);
@@ -57,12 +57,9 @@ export default function ProductCard(e: Product) {
         <h1 className="text-gray-200 font-bold text-sm md:text-md">
           {formatCurrency(e.price)}
         </h1>
-        <button
-          onClick={handleAddToCarts}
-          className="flex justify-center px-3 py-1 bg-gray-50 hover:bg-gray-100 text-sm text-gray-900 font-semibold rounded"
-        >
+        <Button onClick={handleAddToCarts} color="GRAY">
           <MdShoppingCart size="1.5em" />
-        </button>
+        </Button>
         {e.is_stackable && mouseInView && (
           <div className="flex gap-2">
             <input
@@ -71,18 +68,15 @@ export default function ProductCard(e: Product) {
               onChange={(e) => setCount(parseInt(e.target.value))}
               className="w-24 flex justify-center px-3 py-1 bg-gray-50 hover:bg-gray-100 text-sm text-gray-900 font-semibold rounded"
             />
-            <button
+            <Button
+              color="GRAY"
               onClick={() => setCount(count == 1 ? 1 : count - 1)}
-              className="flex justify-center px-3 py-1 bg-gray-50 hover:bg-gray-100 text-sm text-gray-900 font-semibold rounded"
             >
               <AiFillMinusCircle size="1.5em" />
-            </button>
-            <button
-              onClick={() => setCount(count + 1)}
-              className="flex justify-center px-3 py-1 bg-gray-50 hover:bg-gray-100 text-sm text-gray-900 font-semibold rounded"
-            >
+            </Button>
+            <Button color="GRAY" onClick={() => setCount(count + 1)}>
               <AiFillPlusCircle size="1.5em" />
-            </button>
+            </Button>
           </div>
         )}
       </div>

@@ -11,6 +11,7 @@ interface InputMap<T> {
   type?: string;
   label: string;
   required?: boolean;
+  information?: string;
 }
 
 interface FormProp<T, N> {
@@ -19,6 +20,7 @@ interface FormProp<T, N> {
   beforeSubmit?: () => void;
   afterSubmit?: (e: T) => void;
   defaultValueMap?: T;
+  addedValueMap?: object;
   fields: keyof N;
 }
 
@@ -26,6 +28,7 @@ export default function Form<T, N>({
   attributes,
   mutationQuery,
   defaultValueMap,
+  addedValueMap,
   beforeSubmit,
   afterSubmit,
   fields,
@@ -58,11 +61,11 @@ export default function Form<T, N>({
       }
     }
 
-    mutateFunction({ variables: { ...defaultValueMap, ...inputMap } }).then(
-      (e) => {
-        afterSubmit && e.data && afterSubmit(e.data[fields] as any);
-      }
-    );
+    mutateFunction({
+      variables: { ...addedValueMap, ...defaultValueMap, ...inputMap },
+    }).then((e) => {
+      afterSubmit && e.data && afterSubmit(e.data[fields] as any);
+    });
   };
 
   return (
@@ -78,6 +81,7 @@ export default function Form<T, N>({
           onTextChange={(x) => setInputMap({ ...inputMap, [e.name]: x })}
           onCheckChange={(x) => setInputMap({ ...inputMap, [e.name]: x })}
           required={e.required}
+          information={e.information}
         />
       ))}
       <Button loading={mutationLoading} type="submit" color="BLUE">

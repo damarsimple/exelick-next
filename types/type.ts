@@ -25,16 +25,15 @@ export interface User {
   socials: Maybe<UserSocial[]>;
   stream_key: string;
   balance: number;
-  overlay_settings: OverlaySetting[];
-  server_metadatas: ServerMetadata[];
   variables: UserVariable[];
   banned_words: string[];
-  productCount: number;
   profilepicture: Maybe<Picture>;
   banner: Maybe<Picture>;
   subathon_time_end: string;
   is_admin: boolean;
   is_active: boolean;
+  overlays: Overlay[];
+  overlay: Maybe<Overlay>;
   products: Maybe<ProductConnection>;
   transactions: Maybe<TransactionConnection>;
 }
@@ -50,54 +49,6 @@ export enum SocialType {
   Youtube = 'YOUTUBE',
 }
 
-export interface OverlaySetting {
-  color: Maybe<string>;
-  duration: Maybe<string>;
-  show_link: Maybe<boolean>;
-  item_count: Maybe<number>;
-  interval_days: Maybe<number>;
-  title: Maybe<string>;
-  subtitle: Maybe<string>;
-  extra_message: Maybe<string>;
-  running_text_type: Maybe<RunningTextType>;
-  theme: Maybe<OverlayTheme>;
-  separator_type: Maybe<SeparatorType>;
-  speed: Maybe<Speed>;
-  type: OverlayType;
-}
-
-export enum RunningTextType {
-  Latest = 'LATEST',
-  Top = 'TOP',
-}
-export enum OverlayTheme {
-  Default = 'DEFAULT',
-  Simple = 'SIMPLE',
-  Fun = 'FUN',
-  Badut = 'BADUT',
-}
-export enum SeparatorType {
-  Dot = 'DOT',
-  Icon = 'ICON',
-}
-export enum Speed {
-  Slow = 'SLOW',
-  Normal = 'NORMAL',
-  Fast = 'FAST',
-}
-export enum OverlayType {
-  Notification = 'NOTIFICATION',
-  Leaderboard = 'LEADERBOARD',
-  Goal = 'GOAL',
-  Running_text = 'RUNNING_TEXT',
-  Qr_code = 'QR_CODE',
-}
-export interface ServerMetadata {
-  hostname: string;
-  password: Maybe<string>;
-  port: number;
-}
-
 export interface UserVariable {
   name: string;
   value: Maybe<string>;
@@ -105,21 +56,52 @@ export interface UserVariable {
 
 export interface Picture {
   id: string;
-  name: string;
+  name: Maybe<string>;
   created_at: string;
   updated_at: string;
-  cid: Maybe<string>;
+  mime: string;
   original_size: number;
-  compressed_size: number;
+  cid: Maybe<string>;
+  path: Maybe<string>;
   real_path: string;
-  path: string;
-  roles: Maybe<PictureRole>;
 }
 
-export enum PictureRole {
-  Profile_picture = 'PROFILE_PICTURE',
-  Banner = 'BANNER',
-  Cover = 'COVER',
+export interface Overlay {
+  id: string;
+  type: string;
+  created_at: string;
+  updated_at: string;
+  metadata: Maybe<OverlayData>;
+  thumbnail: Maybe<Picture>;
+  audio: Maybe<Audio>;
+  user: User;
+}
+
+export interface OverlayData {
+  theme: Maybe<NotificationTheme>;
+  message: Maybe<string>;
+  color: Maybe<string>;
+  duration: Maybe<number>;
+}
+
+export enum NotificationTheme {
+  Playful = 'PLAYFUL',
+}
+export interface Audio {
+  id: string;
+  name: Maybe<string>;
+  created_at: string;
+  updated_at: string;
+  mime: string;
+  original_size: number;
+  cid: Maybe<string>;
+  path: Maybe<string>;
+  real_path: string;
+}
+
+export enum OverlayType {
+  Notification = 'NOTIFICATION',
+  Runningtext = 'RUNNINGTEXT',
 }
 /** A paginated list of Product edges. */
 export interface ProductConnection {
@@ -226,6 +208,15 @@ export interface TaxResult {
   tax: number;
 }
 
+export interface DashboardData {
+  total_product: number;
+  analytics_sentiment: number;
+  transaction_total: number;
+  transaction_total_month: number;
+  purchase_total: number;
+  purchase_total_month: number;
+}
+
 /** A paginated list of User edges. */
 export interface UserConnection {
   /** Pagination information about the list of edges.*/
@@ -240,50 +231,6 @@ export interface UserEdge {
   node: User;
   /** A unique cursor that can be used for pagination.*/
   cursor: string;
-}
-
-export interface createUser {
-  name: string;
-  username: string;
-  password: string;
-  email: string;
-  tag: string;
-  description?: string;
-}
-
-export interface updateUser {
-  name?: string;
-  username?: string;
-  password?: string;
-  tag?: string;
-  description?: string;
-  subathon_time_end?: string;
-}
-
-export interface PictureAssignInput {
-  id: string;
-}
-
-export interface UserVariableInput {
-  name: string;
-  value: string;
-}
-
-export interface createProduct {
-  is_stackable?: boolean;
-  name: string;
-  commands?: string[];
-  price: number;
-  description?: string;
-}
-
-export interface updateProduct {
-  name?: string;
-  is_stackable?: boolean;
-  commands?: string[];
-  price?: number;
-  description?: string;
-  subathon_time?: number;
 }
 
 export interface createPurchase {
@@ -325,7 +272,56 @@ export interface LoginOutput {
   message: Maybe<string>;
 }
 
+export interface updateUser {
+  name?: string;
+  username?: string;
+  password?: string;
+  tag?: string;
+  description?: string;
+  subathon_time_end?: string;
+}
+
 export interface InvitationOutput {
+  status: boolean;
+  message: Maybe<string>;
+}
+
+export interface createUser {
+  name: string;
+  username: string;
+  password: string;
+  email: string;
+  tag: string;
+  description?: string;
+}
+
+export interface PictureAssignInput {
+  id: string;
+}
+
+export interface UserVariableInput {
+  name: string;
+  value: string;
+}
+
+export interface createProduct {
+  is_stackable?: boolean;
+  name: string;
+  commands?: string[];
+  price: number;
+  description?: string;
+}
+
+export interface updateProduct {
+  name?: string;
+  is_stackable?: boolean;
+  commands?: string[];
+  price?: number;
+  description?: string;
+  subathon_time?: number;
+}
+
+export interface GenericOutput {
   status: boolean;
   message: Maybe<string>;
 }
@@ -333,16 +329,28 @@ export interface InvitationOutput {
 export enum PaymentMethodEnum {
   Qris = 'QRIS',
 }
+export enum OverlayTheme {
+  Default = 'DEFAULT',
+  Simple = 'SIMPLE',
+  Fun = 'FUN',
+  Badut = 'BADUT',
+}
+export enum RunningTextType {
+  Latest = 'LATEST',
+  Top = 'TOP',
+}
+export enum SeparatorType {
+  Dot = 'DOT',
+  Icon = 'ICON',
+}
+export enum Speed {
+  Slow = 'SLOW',
+  Normal = 'NORMAL',
+  Fast = 'FAST',
+}
 export interface Game {
   id: string;
   name: string;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface Audio {
-  id: string;
-  name: Maybe<string>;
   created_at: string;
   updated_at: string;
 }
@@ -354,12 +362,32 @@ export interface Video {
   updated_at: string;
 }
 
+export interface ServerMetadata {
+  hostname: string;
+  password: Maybe<string>;
+  port: number;
+}
+
+export enum PictureRole {
+  Profile_picture = 'PROFILE_PICTURE',
+  Banner = 'BANNER',
+  Cover = 'COVER',
+}
 export interface OyRequestTransactionResponse {
   payment_link_id: string;
   message: string;
   email_status: string;
   url: string;
   status: boolean;
+}
+
+export enum Color {
+  Red = 'RED',
+  Yellow = 'YELLOW',
+}
+export interface createOrUpdateOverlay {
+  type: string;
+  metadata: string;
 }
 
 /** The available directions for ordering a list of records. */
@@ -415,14 +443,16 @@ export enum Trashed {
   With = 'WITH',
   Without = 'WITHOUT',
 }
-export interface meArgs {}
-
 export interface userArgs {
   id: string;
 }
 
 export interface userByUsernameArgs {
   username: string;
+}
+
+export interface userByStreamKeyArgs {
+  stream_key: string;
 }
 
 export interface productArgs {
@@ -437,6 +467,10 @@ export interface query_invitationArgs {
   username: string;
 }
 
+export interface meArgs {}
+
+export interface get_my_dashboard_dataArgs {}
+
 export interface usersArgs {
   /** Limits number of fetched items.*/
   first: number;
@@ -445,12 +479,41 @@ export interface usersArgs {
 }
 
 export interface productsArgs {
-  user_id?: string;
+  user_id: string;
   name?: string;
   /** Limits number of fetched items.*/
   first: number;
   /** A cursor after which elements are returned.*/
   after?: string;
+}
+
+export interface transactionsArgs {
+  user_id: string;
+  /** Limits number of fetched items.*/
+  first: number;
+  /** A cursor after which elements are returned.*/
+  after?: string;
+}
+
+export interface createPurchaseArgs {
+  input: createPurchase;
+}
+
+export interface loginArgs {
+  input: login;
+}
+
+export interface upload_pictureArgs {
+  file: File;
+}
+
+export interface activate_invitationArgs {
+  uuid: string;
+  input: updateUser;
+}
+
+export interface send_invitationArgs {
+  email: string;
 }
 
 export interface createUserArgs {
@@ -495,25 +558,18 @@ export interface update_product_pictureArgs {
   cover?: PictureAssignInput;
 }
 
-export interface createPurchaseArgs {
-  input: createPurchase;
+export interface test_donationArgs {
+  stream_key: string;
 }
 
-export interface loginArgs {
-  input: login;
-}
-
-export interface upload_pictureArgs {
-  file: File;
-}
-
-export interface send_invitationArgs {
-  email: string;
-}
-
-export interface activate_invitationArgs {
-  uuid: string;
-  input: updateUser;
+export interface create_update_overlayArgs {
+  theme?: NotificationTheme;
+  type: OverlayType;
+  message?: string;
+  color?: string;
+  duration?: number;
+  picture_id?: string;
+  audio_id?: string;
 }
 
 export interface userUpdatedArgs {
