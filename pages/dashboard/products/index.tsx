@@ -90,7 +90,7 @@ export default function Index() {
             </TabList>
 
             <TabPanel>
-              {user && (
+              {user?.id && (
                 <Loader<Product>
                   className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mt-4"
                   query={gql`

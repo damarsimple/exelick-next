@@ -59,7 +59,12 @@ function Username({
     <AppContainer title={user.username} fullScreen>
       <div className="grid grid-cols-12 h-full  gap-3">
         <div className="col-span-12 md:col-span-6 lg:col-span-2 bg-gray-100 flex flex-col p-10  gap-6">
-          <div className="flex flex-col text-center bg-white rounded p-4">
+          <div
+            className={
+              "flex flex-col text-center rounded p-4 " +
+              (loading ? "bg-gray-50" : "bg-white")
+            }
+          >
             <ImageContainer
               className="rounded-full h-24 w-24 "
               src={user.profilepicture?.real_path}
@@ -68,11 +73,27 @@ function Username({
               width={500}
               height={500}
             />
-            <h1 className="text-lg font-semibold">{user.name}</h1>
-            <p className="text-md">@{user.name}</p>
-            <p className="text-md">{user.tag}</p>
+            {loading ? (
+              <>
+                <div className="animate-pulse bg-gray-100 h-4 mt-2" />
+                <div className="animate-pulse bg-gray-100 h-4 mt-2" />
+                <div className="animate-pulse bg-gray-100 h-4 mt-2" />
+              </>
+            ) : (
+              <>
+                <h1 className="text-lg font-semibold">{user.name}</h1>
+                <p className="text-md">@{user.name}</p>
+                <p className="text-md">{user.tag}</p>
+              </>
+            )}
           </div>
-          <div className="text-sm p-2 bg-white rounded">{user.description}</div>
+          {loading ? (
+            <div className="animate-pulse bg-gray-50 h-32 mt-2" />
+          ) : (
+            <div className="text-sm p-2 bg-white rounded">
+              {user.description}
+            </div>
+          )}
         </div>
         <div className="gap-2 p-4 col-span-12 md:col-span-6 lg:col-span-8 lg:max-h-full lg:overflow-x-scroll">
           <div className="bg-gray-200 relative" style={{ height: 400 }}>
@@ -85,51 +106,53 @@ function Username({
             />
           </div>
           <SearchBox onChange={setSearchValue} placeholder="Cari Produk" />
-          <Loader
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mt-4"
-            query={gql`
-              ${CORE_PAGE_INFO_FIELD}
-              query UserProductByUsername(
-                $first: Int!
-                $after: String
-                $name: String
-                $user_id: ID!
-              ) {
-                products(
-                  first: $first
-                  after: $after
-                  name: $name
-                  user_id: $user_id
+          {user?.id && (
+            <Loader
+              className="grid grid-cols-2 lg:grid-cols-4 gap-2 mt-4"
+              query={gql`
+                ${CORE_PAGE_INFO_FIELD}
+                query UserProductByUsername(
+                  $first: Int!
+                  $after: String
+                  $name: String
+                  $user_id: ID!
                 ) {
-                  pageInfo {
-                    ...CorePageInfoField
-                  }
-                  edges {
-                    node {
-                      id
-                      name
-                      user_id
-                      is_stackable
-                      price
-                      description
-                      cover {
-                        real_path
+                  products(
+                    first: $first
+                    after: $after
+                    name: $name
+                    user_id: $user_id
+                  ) {
+                    pageInfo {
+                      ...CorePageInfoField
+                    }
+                    edges {
+                      node {
+                        id
+                        name
+                        user_id
+                        is_stackable
+                        price
+                        description
+                        cover {
+                          real_path
+                        }
                       }
                     }
                   }
                 }
-              }
-            `}
-            Component={ProductCard}
-            SkeletonComponent={SkeletonProductCard}
-            fields="products"
-            perPage={12}
-            fetchPolicy="network-only"
-            variables={{
-              name: wildCardFormatter(searchValue),
-              user_id: user.id,
-            }}
-          />
+              `}
+              Component={ProductCard}
+              SkeletonComponent={SkeletonProductCard}
+              fields="products"
+              perPage={12}
+              fetchPolicy="network-only"
+              variables={{
+                name: wildCardFormatter(searchValue),
+                user_id: user.id,
+              }}
+            />
+          )}
         </div>
         <div className="col-span-12 md:col-span-12 lg:col-span-2 bg-gray-100 flex flex-col  lg:max-h-full lg:overflow-x-auto  order-2 lg:order-last">
           {carts.map(({ qty, product }, i) => (

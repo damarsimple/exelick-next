@@ -37,13 +37,9 @@ export function UserCardSkeleton() {
       <h1 className="bg-gray-100 rounded animate-pulse"></h1>
       <p className="h-6 bg-gray-100 rounded animate-pulse"></p>
       <p className="h-6 bg-gray-100 rounded animate-pulse"></p>
-      <Link href="/username">
-        <a>
-          <Button color="GRAY" loading>
-            Donasi
-          </Button>
-        </a>
-      </Link>
+      <Button color="GRAY" loading>
+        Donasi
+      </Button>
     </div>
   );
 }
