@@ -30,6 +30,25 @@ import { ALL_OVERLAY_DATA } from "../../fragments/fragments";
 import { NextPageContext } from "next";
 import { client } from "../_app";
 
+const GET_ME_DATA = gql`
+  ${ALL_OVERLAY_DATA}
+  query GetMe($type: OverlayType!, $streamKey: String!) {
+    userByStreamKey(stream_key: $streamKey) {
+      id
+      overlay(type: $type) {
+        thumbnail {
+          real_path
+        }
+        audio {
+          real_path
+        }
+        metadata {
+          ...AllOverlayData
+        }
+      }
+    }
+  }
+`;
 interface NotificationStore {
   queues: Purchase[];
   newQueues: Partial<Purchase>[];
@@ -98,7 +117,13 @@ function Notifications({
     null | Overlay | undefined
   >(null);
 
-  const overlay = overlayNewData ?? (overlayData || {});
+  const { data } = useQuery<{ userByStreamKey: User }>(GET_ME_DATA, {
+    variables: { streamKey: key, type: OverlayType.Notification },
+    fetchPolicy: "network-only",
+  });
+
+  const overlay =
+    overlayNewData ?? data?.userByStreamKey?.overlay ?? (overlayData || {});
 
   const { metadata } = overlay;
 
@@ -293,25 +318,7 @@ export async function getServerSideProps(context: NextPageContext) {
 
   const { data } = await client.query({
     variables: { streamKey: key, type: OverlayType.Notification },
-    query: gql`
-      ${ALL_OVERLAY_DATA}
-      query GetMe($type: OverlayType!, $streamKey: String!) {
-        userByStreamKey(stream_key: $streamKey) {
-          id
-          overlay(type: $type) {
-            thumbnail {
-              real_path
-            }
-            audio {
-              real_path
-            }
-            metadata {
-              ...AllOverlayData
-            }
-          }
-        }
-      }
-    `,
+    query: GET_ME_DATA,
   });
 
   return {
